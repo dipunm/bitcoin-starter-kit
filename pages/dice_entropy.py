@@ -104,8 +104,6 @@ class DiceEntropyPage:
         self.screen.start()
         self.screen.QueueUpdate(delay_ms=0)
         await uasyncio.sleep_ms(50)
-        self.screen.QueueUpdate(delay_ms=0)
-        await uasyncio.sleep_ms(50)
         
         # Configure for fast refreshes
         self.screen.display.update_speed(

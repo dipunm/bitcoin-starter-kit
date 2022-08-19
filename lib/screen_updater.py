@@ -12,6 +12,10 @@ class ScreenUpdater:
     def start(self):
         self.thread = _thread.start_new_thread(self._main, ())
         
+    def stop(self):
+        self.thread_exit = True
+        time.sleep(1)
+
     def QueueUpdate(self, delay_ms = 500):
         self.lock.acquire()
         self.needs_update = True
@@ -25,6 +29,7 @@ class ScreenUpdater:
 
     def _main(self):
         time.sleep(1)
+        self.thread_exit = False
         while not self.thread_exit:
             self.lock.acquire()
             diff = time.ticks_diff(self.update_time, time.ticks_ms())
@@ -35,8 +40,6 @@ class ScreenUpdater:
             else:
                 self.lock.release()
             time.sleep(0.01)
-        _thread.exit()
 
-    def end(self):
-        self.thread_exit = True
+        _thread.exit()
 

@@ -1,3 +1,4 @@
+from consts.PageAliases import Aliases
 import uasyncio
 import badger2040
 from utils.asynclib import oneOf
@@ -62,6 +63,10 @@ class DiceEntropyPage:
         drawIndicator(self.screen.display, self.pos.get())
         self.screen.QueueUpdate(delay_ms=10)
 
+    async def exit(self):
+        print("going to menu")
+        self.inputs.stop()
+
     def prepareUI(self):
         display = self.screen.display
         display.pen(0)
@@ -75,9 +80,17 @@ class DiceEntropyPage:
         display.text("back", 139, 118, 1)
         display.text("next", 247, 118, 1)
 
-        display.thickness(2)
-        display.text("C", 290, 29, 1.5)
-        display.text("Q", 290, 90, 1.5)
+        display.thickness(1)
+        display.text("C", 291, 14, 1.5)
+        display.text("L", 291, 23, 1.5)
+        display.text("E", 291, 32, 1.5)
+        display.text("A", 291, 41, 1.5)
+        display.text("R", 291, 50, 1.5)
+        
+        display.text("Q", 291, 75, 1.5)
+        display.text("U", 291, 84, 1.5)
+        display.text("I", 291, 93, 1.5)
+        display.text("T", 291, 102, 1.5)
         display.thickness(1)
 
     def clear(self):
@@ -86,13 +99,14 @@ class DiceEntropyPage:
         display.pen(15)
         display.clear()
         display.pen(0)
-
+        
     async def start(self):
         # Setup inputs
         self.inputs.reset()
         self.inputs.register(Input.A, self.count)
         self.inputs.register(Input.B, self.back)
         self.inputs.register(Input.C, self.next)
+        self.inputs.register(Input.DOWN, self.exit)
         
         # Draw initial view
         self.screen.display.led(95)
@@ -113,3 +127,9 @@ class DiceEntropyPage:
 
         # Start input listener
         await self.inputs.start()
+        
+        # Cleanup resources
+        self.screen.stop()
+
+        # Return to menu page when closed.
+        return Aliases.menu

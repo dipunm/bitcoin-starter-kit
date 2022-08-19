@@ -37,6 +37,7 @@ class InputManager:
     def __init__(self) -> None:
         self.actionMap = {}
         self.pinMap = {}
+        self.endEvent = uasyncio.Event()
 
     def register(self, input: Input, action):
         self.actionMap[input.id] = action
@@ -44,6 +45,11 @@ class InputManager:
 
     def reset(self):
         self.actionMap = {}
+        self.pinMap = {}
+
+    def stop(self):
+        self.ended = True
+        self.endEvent.set()
 
     async def firstPinActivate(self) -> Input:
         return await oneOf(
@@ -51,6 +57,15 @@ class InputManager:
         )
 
     async def start(self):
-        while True:
-            pin = await self.firstPinActivate()
+        self.ended = False
+        while not self.ended:
+            pin = await oneOf(
+                    self.firstPinActivate(),
+                    self.endEvent.wait(),
+            )
+
+            if self.endEvent.is_set():
+                self.endEvent.clear()
+                break
+
             uasyncio.create_task(self.actionMap[id(pin)]())

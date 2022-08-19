@@ -1,13 +1,19 @@
+from consts.PageAliases import Aliases
+from pages import DiceEntropyPage, MenuPage
 from lib.input_manager import InputManager
 from lib.screen_updater import ScreenUpdater
-from pages import DiceEntropyPage
 
 class PageManager:
-    page: DiceEntropyPage
     def __init__(self, inputManager: InputManager, screenUpdater: ScreenUpdater) -> None:
         self.screen = screenUpdater
         self.inputs = inputManager
+        self.pages = {
+            Aliases.menu: lambda : MenuPage(inputManager, screenUpdater),
+            Aliases.dice_entropy: lambda : DiceEntropyPage(inputManager, screenUpdater)
+        }
 
     async def start(self):
-        self.page = DiceEntropyPage(self.inputs, self.screen)
-        await self.page.start()
+        self.page = MenuPage(self.inputs, self.screen)
+        while True:
+            nextPage = await self.page.start()
+            self.page = self.pages[nextPage]()

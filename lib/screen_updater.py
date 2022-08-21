@@ -5,7 +5,7 @@ class ScreenUpdater:
     def __init__(self, display):
         self.thread_exit = False
         self.display = display
-        self.lock = _thread.allocate_lock()
+        self.variableLock = _thread.allocate_lock()
         self.runningLock = _thread.allocate_lock()
         self.needs_update = False
         self.update_time = time.ticks_ms()
@@ -22,29 +22,29 @@ class ScreenUpdater:
                 break
 
     def QueueUpdate(self, delay_ms = 500):
-        self.lock.acquire()
+        self.variableLock.acquire()
         self.needs_update = True
-        self.lock.release()
+        self.variableLock.release()
         self.DelayAnyUpdate(delay_ms=delay_ms)
 
     def DelayAnyUpdate(self, delay_ms = 500):
-        self.lock.acquire()
+        self.variableLock.acquire()
         self.update_time = time.ticks_add(time.ticks_ms(), delay_ms)
-        self.lock.release()
+        self.variableLock.release()
 
     def _main(self):
-        self.runningLock.acquire()
         time.sleep(1)
+        self.runningLock.acquire()
         self.thread_exit = False
         while not self.thread_exit:
-            self.lock.acquire()
+            self.variableLock.acquire()
             diff = time.ticks_diff(self.update_time, time.ticks_ms())
             if self.needs_update and diff <= 0:
                 self.needs_update = False
-                self.lock.release()
+                self.variableLock.release()
                 self.display.update()
             else:
-                self.lock.release()
+                self.variableLock.release()
             time.sleep(0.01)
 
         self.runningLock.release()

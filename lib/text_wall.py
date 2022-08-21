@@ -17,7 +17,6 @@ class TextWall:
 
         self.lines = []
         lines = self.text.split('\n')
-        print("lines: ", len(lines))
         row = 0
         col = 0
         for line in lines:
@@ -30,7 +29,6 @@ class TextWall:
                     row += 1
                     col = 0
                     toPrint = word
-                print("LINES", len(self.lines), "ROW", row)
                 if row >= len(self.lines): 
                     self.lines.append("")
 
@@ -39,15 +37,25 @@ class TextWall:
             col = 0
             row += 1
     
+    def canScrollUp(self):
+        return self.scrollRow > 0
+
+    def canScrollDown(self):
+        return len(self.lines) - self.maxRow - self.scrollRow - 1 > 0
+
     def scrollUp(self):
-        self.scrollRow = 0 if self.scrollRow < 1 else self.scrollRow - 1
+        if self.canScrollUp():
+            self.scrollRow -= min(self.maxRow, self.scrollRow)
 
     def scrollDown(self):
-        self.scrollRow += 1 if len(self.lines) - self.maxRow - self.scrollRow - 1 > 0 else 0
+        if self.canScrollDown():
+            self.scrollRow += min(
+                self.maxRow - 1, 
+                len(self.lines) - self.scrollRow - self.maxRow - 1
+            )
 
     def clearSpace(self):
         self.display.pen(15)
-        print("clearing::::", self.anchor_x, self.anchor_y, self.width, self.height)
         self.display.rectangle(self.anchor_x, self.anchor_y, self.width, self.height)
         self.display.pen(0)
 

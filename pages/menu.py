@@ -32,6 +32,13 @@ class MenuPage:
         display.update_speed(badger2040.UPDATE_NORMAL)
         display.pen(15)
         display.clear()
+        display.update()
+        display.pen(0)
+        display.clear()
+        display.update()
+        display.pen(15)
+        display.clear()
+        display.update()
         display.pen(0)
 
     async def start(self):
@@ -43,12 +50,13 @@ class MenuPage:
         self.screen.display.led(95)
         self.clear()
         self.drawUI()
-        
-        # Refresh screen
+
+        # Update screen
         self.screen.start()
-        self.screen.QueueUpdate(delay_ms=0)
-        
+        self.screen.QueueUpdate()        
+
         # Configure for fast refreshes
+        self.screen.display.update_speed(badger2040.UPDATE_FAST)
         
         # Start input listener
         await self.inputs.start()
@@ -57,4 +65,4 @@ class MenuPage:
         self.screen.stop()
 
         # Return to menu page when closed.
-        return Aliases.dice_entropy
+        return Aliases.dice_entropy_info

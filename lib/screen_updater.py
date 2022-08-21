@@ -6,6 +6,7 @@ class ScreenUpdater:
         self.thread_exit = False
         self.display = display
         self.lock = _thread.allocate_lock()
+        self.runningLock = _thread.allocate_lock()
         self.needs_update = False
         self.update_time = time.ticks_ms()
 
@@ -14,7 +15,11 @@ class ScreenUpdater:
         
     def stop(self):
         self.thread_exit = True
-        time.sleep(1)
+        while True:
+            if self.runningLock.locked():
+                time.sleep(0.1)
+            else:
+                break
 
     def QueueUpdate(self, delay_ms = 500):
         self.lock.acquire()
@@ -28,6 +33,7 @@ class ScreenUpdater:
         self.lock.release()
 
     def _main(self):
+        self.runningLock.acquire()
         time.sleep(1)
         self.thread_exit = False
         while not self.thread_exit:
@@ -41,5 +47,6 @@ class ScreenUpdater:
                 self.lock.release()
             time.sleep(0.01)
 
+        self.runningLock.release()
         _thread.exit()
 

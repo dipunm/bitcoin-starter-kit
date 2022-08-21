@@ -20,52 +20,100 @@ class DiceEntropyPage:
         self.comboPressLock = uasyncio.Lock()
         self.comboBreakEvent = uasyncio.Event()
         self.comboAddEvent = uasyncio.Event()
+        self.diceCapture = [0] * 132 # array of 0's 132 times
 
     async def count(self):
         if self.comboPressLock.locked():
             self.comboAddEvent.set()
         else:
-            dice = Counter(1, 6) # 1 - 6 inclusive
             pos = self.pos.get()
+            dice = Counter(1, 6, loop=True) # 1 - 6 inclusive
+
+            print("START>>", self.diceCapture[pos])
+            if (self.diceCapture[pos] != 0):
+                dice.set(self.diceCapture[pos] + 1)
+
+            self.diceCapture[pos] = dice.get()
+            print("DICE>>>:", dice.get(), pos, self.diceCapture[pos])
+            change = True
             async with self.comboPressLock:
                 while True:
                     self.comboBreakEvent.clear()
                     self.comboAddEvent.clear()
-                    await oneOf(
-                        sleep_ms(500),
-                        self.comboAddEvent.wait(),
-                        self.comboBreakEvent.wait()
-                    )
+                    if change == True:
+                        await oneOf(
+                            sleep_ms(500),
+                            self.comboAddEvent.wait(),
+                            self.comboBreakEvent.wait()
+                        )
+                    else:
+                        await oneOf(
+                            self.comboAddEvent.wait(),
+                            self.comboBreakEvent.wait()
+                        )
 
-                    if self.comboAddEvent.is_set():
+
+                    was_timeout = not self.comboAddEvent.is_set() and not self.comboBreakEvent.is_set()
+
+                    if was_timeout:
+                        change = False
+                        self.redrawAll()
+                        self.screen.QueueUpdate(delay_ms=10)
+                        continue
+                    elif self.comboAddEvent.is_set():
                         dice.increment()
+                        self.diceCapture[pos] = dice.get()
+                        change = True
                         self.comboAddEvent.clear()
                         continue
                     else:
                         break
-    
-            drawDice(self.screen.display, pos, dice.get())
-            await self.next()
+                
+            self.redrawAll()
+            self.screen.QueueUpdate(delay_ms=10)
 
             
     async def next(self):
         self.comboBreakEvent.set()
-        self.screen.DelayAnyUpdate()
+        if self.diceCapture[self.pos.get()] == 0:
+            # Current dice not set, do not progress.
+            return
         self.pos.increment()
-        drawIndicator(self.screen.display, self.pos.get())
+        self.redrawAll()
         self.screen.QueueUpdate(delay_ms=10)
 
 
     async def back(self):
         self.comboBreakEvent.set()
-        self.screen.DelayAnyUpdate()
+        if self.pos.get() < 1:
+            # No need to decrement or refresh the screen
+            return
         self.pos.decrement()
-        drawIndicator(self.screen.display, self.pos.get())
+        self.redrawAll()
         self.screen.QueueUpdate(delay_ms=10)
 
     async def exit(self):
         print("going to menu")
         self.inputs.stop()
+
+    async def clearBoard(self):
+        self.diceCapture = [0] * 132
+        self.pos.reset()
+        self.redrawAll()
+        self.screen.QueueUpdate(delay_ms=0)
+        
+    def redrawAll(self):
+        self.screen.display.pen(15)
+        self.screen.display.clear()
+        self.screen.display.pen(0)
+        self.prepareUI()
+        for i in range(0, 131):
+            if self.diceCapture[i] == 0:
+                break
+
+            drawDice(self.screen.display, i, self.diceCapture[i])
+        drawIndicator(self.screen.display, self.pos.get())
+
 
     def prepareUI(self):
         display = self.screen.display
@@ -77,7 +125,7 @@ class DiceEntropyPage:
         display.thickness(1)
         display.font("bitmap8")
         display.text("count", 32, 118, 1)
-        display.text("back", 139, 118, 1)
+        display.text("prev", 139, 118, 1)
         display.text("next", 247, 118, 1)
 
         display.thickness(1)
@@ -106,6 +154,7 @@ class DiceEntropyPage:
         self.inputs.register(Input.A, self.count)
         self.inputs.register(Input.B, self.back)
         self.inputs.register(Input.C, self.next)
+        self.inputs.register(Input.UP, self.clearBoard)
         self.inputs.register(Input.DOWN, self.exit)
         
         # Draw initial view

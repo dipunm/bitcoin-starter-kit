@@ -3,8 +3,6 @@ def drawIndicator(display, pos):
     _y = (pos-_x)/19
     x = int(15 * _x) + 1
     y = int(15 * _y) + 1
-    display.pen(15)
-    display.rectangle(x-16,y+16,46,3)
     display.pen(0)
     display.rectangle(x,y+16,14,3)
     

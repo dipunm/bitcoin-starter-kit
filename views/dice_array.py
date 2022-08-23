@@ -1,16 +1,16 @@
-def drawIndicator(display, pos):
+def drawIndicator(display, pos, shiftY=0):
     _x = (pos % 19)
     _y = (pos-_x)/19
     x = int(15 * _x) + 1
-    y = int(15 * _y) + 1
+    y = int(15 * _y) + 1 - shiftY
     display.pen(0)
     display.rectangle(x,y+16,14,3)
     
-def drawDice(display, pos, val):
+def drawDice(display, pos, val, shiftY=0):
     _x = (pos % 19)
     _y = (pos-_x)/19
     x = int(15 * _x) + 1
-    y = int(15 * _y) + 1
+    y = int(15 * _y) + 1 - shiftY
     display.pen(0)
     display.rectangle(x-1,y-1,16,16)
     display.pen(15)

@@ -16,11 +16,11 @@ class DiceEntropyPage:
     def __init__(self, inputs: InputManager, screen: ScreenUpdater) -> None:
         self.inputs = inputs
         self.screen = screen
-        self.pos = Counter(0, 131) # 0 - 131 inclusive, total: 132
+        self.pos = Counter(0, 141) # 0 - 131 inclusive, total: 132
         self.comboPressLock = uasyncio.Lock()
         self.comboBreakEvent = uasyncio.Event()
         self.comboAddEvent = uasyncio.Event()
-        self.diceCapture = [0] * 132 # array of 0's 132 times
+        self.diceCapture = [0] * 142 # array of 0's 132 times
 
     async def count(self):
         if self.comboPressLock.locked():
@@ -59,7 +59,7 @@ class DiceEntropyPage:
                         change = False
                         self.redrawAll()
                         self.screen.QueueUpdate(delay_ms=10)
-                        continue
+                        break
                     elif self.comboAddEvent.is_set():
                         dice.increment()
                         self.diceCapture[pos] = dice.get()
@@ -68,9 +68,11 @@ class DiceEntropyPage:
                         continue
                     else:
                         break
-                
-            self.redrawAll()
-            self.screen.QueueUpdate(delay_ms=10)
+            
+            if change:
+                change = False
+                self.redrawAll()
+                self.screen.QueueUpdate(delay_ms=10)
 
             
     async def next(self):
@@ -83,8 +85,9 @@ class DiceEntropyPage:
             return
         
         self.pos.increment()
-        self.redrawAll()
-        self.screen.QueueUpdate(delay_ms=10)
+        if not self.comboPressLock.locked():
+            self.redrawAll()
+            self.screen.QueueUpdate(delay_ms=10)
 
 
     async def back(self):
@@ -92,9 +95,11 @@ class DiceEntropyPage:
         if self.pos.get() < 1:
             # No need to decrement or refresh the screen
             return
+
         self.pos.decrement()
-        self.redrawAll()
-        self.screen.QueueUpdate(delay_ms=10)
+        if not self.comboPressLock.locked():
+            self.redrawAll()
+            self.screen.QueueUpdate(delay_ms=10)
 
     async def exit(self):
         print("going to menu")
@@ -104,17 +109,31 @@ class DiceEntropyPage:
         self.screen.display.pen(15)
         self.screen.display.clear()
         self.screen.display.pen(0)
-        self.prepareUI()
-        for i in range(0, 132): # exclusive (132 is omitted)
-            if self.diceCapture[i] == 0:
-                break
 
-            drawDice(self.screen.display, i, self.diceCapture[i])
-        drawIndicator(self.screen.display, self.pos.get())
+        if self.pos.get() > 132:
+            for i in range(0, 142): # exclusive (132 is omitted)
+                if self.diceCapture[i] == 0:
+                    break
+
+                drawDice(self.screen.display, i, self.diceCapture[i], shiftY=11)
+            drawIndicator(self.screen.display, self.pos.get(), shiftY=11)
+        else:
+            for i in range(0, 142): # exclusive (132 is omitted)
+                if self.diceCapture[i] == 0:
+                    break
+
+                drawDice(self.screen.display, i, self.diceCapture[i])
+            drawIndicator(self.screen.display, self.pos.get())
+
+        self.prepareUI()
 
 
     def prepareUI(self):
         display = self.screen.display
+        display.pen(15)
+        display.rectangle(0, 114, 296, 15)
+        display.rectangle(287, 0, 10, 128)
+
         display.pen(0)
         display.line(0, 114, 287, 114)
         display.line(287, 0, 287, 115)

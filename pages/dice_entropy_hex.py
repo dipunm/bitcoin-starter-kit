@@ -1,26 +1,36 @@
 from consts.PageAliases import Aliases
-from lib.text_wall import TextWall
+from lib.text_wall_mono import TextWallMono
 import uasyncio
 import badger2040
-from utils.asynclib import oneOf
-from views.dice_array import drawDice, drawIndicator
-from lib.counter import Counter
 from lib.screen_updater import ScreenUpdater
 from lib.input_manager import Input, InputManager
 
-class DiceEntropyInfoPage:
+class DiceEntropyHexPage:
     def __init__(self, inputs: InputManager, screen: ScreenUpdater) -> None:
         self.inputs = inputs
         self.screen = screen
-        self.textwall = TextWall(self.screen.display, 5, 5, 280, 108)
-        self.textwall.setText("""Dice entropy
-        
-        Dice rolls are a great source of entropy. 132 rolls will allow us to generate 256bits of entropy in a verifiable way. Visit https://www.dipunmistry.co.uk/... for more details.
+        self.textwall = TextWallMono(self.screen.display, 5, 5, 280, 108)
+        self.textwall.setText(
+"""123456 123456 123456 123456 123456 123456
 
-        After each die roll, press the 'count' button the appropriate number of times to record the dice roll, and then press the 'next' button to progress to the next record.
+123456 123456 123456 123456 123456 123456
 
-        To continue, press OK
-        """)
+123456 123456 123456 123456 123456 123456
+
+123456 123456 123456 123456 123456 1234--"""
+        )
+
+        self.textwall2 = TextWallMono(self.screen.display, 2, 3, 280, 112)
+        self.textwall2.setText(
+"""
+ A B 0  F F 3  E E F  8 8 3  2 8 3  4 8 F
+
+ A 0 0  0 B C  A B 0  F F 3  E E F  8 8 3
+
+ 2 8 3  4 8 F  A 0 0  0 B C  A B 0  F F 3
+
+ E E F  8 8 3  A B 0  F F 3  E E F  8 8 -"""
+        )
 
     def prepareUI(self):
         display = self.screen.display
@@ -90,6 +100,7 @@ class DiceEntropyInfoPage:
         self.clear()
         self.prepareUI()
         self.textwall.render()
+        self.textwall2.render(clearSpace=False)
 
         # Refresh screen
         self.screen.start()

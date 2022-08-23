@@ -78,6 +78,10 @@ class DiceEntropyPage:
         if self.diceCapture[self.pos.get()] == 0:
             # Current dice not set, do not progress.
             return
+
+        if self.pos.get() == len(self.diceCapture) - 1:
+            return
+        
         self.pos.increment()
         self.redrawAll()
         self.screen.QueueUpdate(delay_ms=10)
@@ -95,19 +99,13 @@ class DiceEntropyPage:
     async def exit(self):
         print("going to menu")
         self.inputs.stop()
-
-    async def clearBoard(self):
-        self.diceCapture = [0] * 132
-        self.pos.reset()
-        self.redrawAll()
-        self.screen.QueueUpdate(delay_ms=0)
         
     def redrawAll(self):
         self.screen.display.pen(15)
         self.screen.display.clear()
         self.screen.display.pen(0)
         self.prepareUI()
-        for i in range(0, 131):
+        for i in range(0, 132): # exclusive (132 is omitted)
             if self.diceCapture[i] == 0:
                 break
 
@@ -128,34 +126,41 @@ class DiceEntropyPage:
         display.text("prev", 139, 118, 1)
         display.text("next", 247, 118, 1)
 
-        display.thickness(1)
-        display.text("C", 291, 14, 1.5)
-        display.text("L", 291, 23, 1.5)
-        display.text("E", 291, 32, 1.5)
-        display.text("A", 291, 41, 1.5)
-        display.text("R", 291, 50, 1.5)
+        display.text("Q", 291, 14, 1.5)
+        display.text("U", 291, 23, 1.5)
+        display.text("I", 291, 32, 1.5)
+        display.text("T", 291, 41, 1.5)
         
-        display.text("Q", 291, 75, 1.5)
-        display.text("U", 291, 84, 1.5)
-        display.text("I", 291, 93, 1.5)
-        display.text("T", 291, 102, 1.5)
-        display.thickness(1)
-
+        if self.canComplete():
+            display.text("D", 291, 75, 1.5)
+            display.text("O", 291, 84, 1.5)
+            display.text("N", 291, 93, 1.5)
+            display.text("E", 291, 102, 1.5)
+        
     def clear(self):
         display = self.screen.display
         display.update_speed(badger2040.UPDATE_NORMAL)
         display.pen(15)
         display.clear()
         display.pen(0)
+
+    def canComplete(self):
+        return len(list(filter(lambda x: x == 0, self.diceCapture))) == 0
+
+    async def done(self):
+        if not self.canComplete():
+            return
         
+        print("I WOULD WORK!!!")
+    
     async def start(self):
         # Setup inputs
         self.inputs.reset()
         self.inputs.register(Input.A, self.count)
         self.inputs.register(Input.B, self.back)
         self.inputs.register(Input.C, self.next)
-        self.inputs.register(Input.UP, self.clearBoard)
-        self.inputs.register(Input.DOWN, self.exit)
+        self.inputs.register(Input.UP, self.exit)
+        self.inputs.register(Input.DOWN, self.done)
         
         # Draw initial view
         self.screen.display.led(95)

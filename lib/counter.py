@@ -8,10 +8,16 @@ class Counter:
         self.loop = loop
 
     def increment(self):
-        self.count = self.count + 1 if self.count < self.max else self.min
+        if self.count < self.max:
+            self.count += 1
+        elif self.loop and self.count == self.max:
+            self.count = self.min
     
     def decrement(self):
-        self.count = self.count - 1 if self.count > self.min else self.min
+        if self.count > self.min:
+            self.count -= 1
+        elif self.loop and self.count == self.min:
+            self.count = self.max
     
     def reset(self):
         self.count = self.min

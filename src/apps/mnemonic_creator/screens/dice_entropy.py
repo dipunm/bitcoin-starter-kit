@@ -1,9 +1,9 @@
 import uasyncio
 import badger2040
 import apps.menu as menu
-from utils.asynclib import oneOf
-from apps.mnemonic_creator.lib.die_renderer import drawDice, drawIndicator
-from core.lib.counter import Counter
+from core.util.asynclib import oneOf
+from apps.mnemonic_creator.helpers.die_renderer import drawDice, drawIndicator
+from core.tracking.counter import Counter
 from core.io.input_manager import Input
 from core.io import display, inputManager, screenUpdater
 

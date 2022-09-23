@@ -4,7 +4,7 @@ import badger2040
 import apps.menu as menu
 import apps.mnemonic_creator.screens.dice_entropy as dice_entropy
 from core.io.input_manager import Input
-from core.lib.text_wall_mono import TextWallMono
+from core.presentation.text_wall_mono import TextWallMono
 
 from core.io import inputManager, screenUpdater, display
 

@@ -2,7 +2,7 @@ import uasyncio
 import badger2040
 import apps.menu as menu
 from apps.mnemonic_creator.screens.dice_entropy import DiceEntropyPage
-from core.lib.text_wall import TextWall
+from core.presentation.text_wall import TextWall
 from core.io.input_manager import Input
 from core.io import display, inputManager, screenUpdater
 

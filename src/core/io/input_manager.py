@@ -1,7 +1,7 @@
 import uasyncio
 import badger2040
 import machine
-from utils.asynclib import oneOf
+from core.util.asynclib import oneOf
 
 async def wait_pin_value(pin, value):
     active = 0

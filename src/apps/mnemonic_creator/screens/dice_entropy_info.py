@@ -1,40 +1,24 @@
-from consts.PageAliases import Aliases
-from lib.text_wall_mono import TextWallMono
 import uasyncio
 import badger2040
-from lib.screen_updater import ScreenUpdater
-from lib.input_manager import Input, InputManager
+import apps.menu as menu
+from apps.mnemonic_creator.screens.dice_entropy import DiceEntropyPage
+from core.lib.text_wall import TextWall
+from core.io.input_manager import Input
+from core.io import display, inputManager, screenUpdater
 
-class DiceEntropyHexPage:
-    def __init__(self, inputs: InputManager, screen: ScreenUpdater) -> None:
-        self.inputs = inputs
-        self.screen = screen
-        self.textwall = TextWallMono(self.screen.display, 5, 5, 280, 108)
-        self.textwall.setText(
-"""123456 123456 123456 123456 123456 123456
-
-123456 123456 123456 123456 123456 123456
-
-123456 123456 123456 123456 123456 123456
-
-123456 123456 123456 123456 123456 1234--"""
-        )
-
-        self.textwall2 = TextWallMono(self.screen.display, 2, 3, 280, 112)
-        self.textwall2.setText(
-"""
- A B 0  F F 3  E E F  8 8 3  2 8 3  4 8 F
-
- A 0 0  0 B C  A B 0  F F 3  E E F  8 8 3
-
- 2 8 3  4 8 F  A 0 0  0 B C  A B 0  F F 3
-
- E E F  8 8 3  A B 0  F F 3  E E F  8 8 -"""
-        )
-
-    def prepareUI(self):
-        display = self.screen.display
+class DiceEntropyInfoPage:
+    def __init__(self) -> None:
+        self.textwall = TextWall(display, 5, 5, 280, 108)
+        self.textwall.setText("""Dice entropy
         
+        Dice rolls are a great source of entropy. 132 rolls will allow us to generate 256bits of entropy in a verifiable way. Visit https://www.dipunmistry.co.uk/... for more details.
+
+        After each die roll, press the 'count' button the appropriate number of times to record the dice roll, and then press the 'next' button to progress to the next record.
+
+        To continue, press OK
+        """)
+
+    def prepareUI(self):        
         # Clear the UI areas
         display.pen(15)
         display.rectangle(0, 114, 296, 15)
@@ -60,15 +44,14 @@ class DiceEntropyHexPage:
             display.text("N", 291, 102, 1.5)
         
     def clear(self):
-        display = self.screen.display
         display.update_speed(badger2040.UPDATE_NORMAL)
         display.pen(15)
         display.clear()
         display.pen(0)
         
     async def nextPage(self):
-        self.goto = Aliases.dice_entropy
-        self.inputs.stop()
+        self.goto = DiceEntropyPage().start
+        inputManager.stop()
 
     async def scrollDown(self):
         if not self.textwall.canScrollDown():
@@ -77,7 +60,7 @@ class DiceEntropyHexPage:
         self.textwall.scrollDown()
         self.textwall.render()
         self.prepareUI()
-        self.screen.QueueUpdate(delay_ms=300)
+        screenUpdater.QueueUpdate(delay_ms=300)
 
     async def scrollUp(self):
         if not self.textwall.canScrollUp():
@@ -86,38 +69,37 @@ class DiceEntropyHexPage:
         self.textwall.scrollUp()
         self.textwall.render()
         self.prepareUI()
-        self.screen.QueueUpdate(delay_ms=300)
+        screenUpdater.QueueUpdate(delay_ms=300)
 
     async def start(self):
         # Setup inputs
-        self.inputs.reset()
-        self.inputs.register(Input.A, self.nextPage)    
-        self.inputs.register(Input.UP, self.scrollUp)
-        self.inputs.register(Input.DOWN, self.scrollDown)
+        inputManager.reset()
+        inputManager.register(Input.A, self.nextPage)    
+        inputManager.register(Input.UP, self.scrollUp)
+        inputManager.register(Input.DOWN, self.scrollDown)
         
         # Draw initial view
-        self.screen.display.led(95)
+        display.led(95)
         self.clear()
         self.prepareUI()
         self.textwall.render()
-        self.textwall2.render(clearSpace=False)
 
         # Refresh screen
-        self.screen.start()
-        self.screen.QueueUpdate(delay_ms=0)
+        screenUpdater.start()
+        screenUpdater.QueueUpdate(delay_ms=0)
         await uasyncio.sleep_ms(50)
         
         # Configure for fast refreshes
-        self.screen.display.update_speed(
+        display.update_speed(
             badger2040.UPDATE_FAST
         )
-        self.screen.display.led(0)
+        display.led(0)
 
         # Start input listener
-        await self.inputs.start()
+        await inputManager.start()
         
         # Cleanup resources
-        self.screen.stop()
+        screenUpdater.stop()
 
         # Return to menu page when closed.
-        return self.goto or Aliases.menu
+        return self.goto or menu.run

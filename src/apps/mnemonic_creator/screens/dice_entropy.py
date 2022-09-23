@@ -1,11 +1,11 @@
-from consts.PageAliases import Aliases
 import uasyncio
 import badger2040
+import apps.menu as menu
 from utils.asynclib import oneOf
-from views.dice_array import drawDice, drawIndicator
-from lib.counter import Counter
-from lib.screen_updater import ScreenUpdater
-from lib.input_manager import Input, InputManager
+from apps.mnemonic_creator.lib.die_renderer import drawDice, drawIndicator
+from core.lib.counter import Counter
+from core.io.input_manager import Input
+from core.io import display, inputManager, screenUpdater
 
 async def sleep_ms(ms):
     # uasyncio.sleep_ms cannot be passed 
@@ -13,9 +13,7 @@ async def sleep_ms(ms):
     return await uasyncio.sleep_ms(ms)
 
 class DiceEntropyPage:
-    def __init__(self, inputs: InputManager, screen: ScreenUpdater) -> None:
-        self.inputs = inputs
-        self.screen = screen
+    def __init__(self) -> None:
         self.pos = Counter(0, 141) # 0 - 131 inclusive, total: 132
         self.comboPressLock = uasyncio.Lock()
         self.comboBreakEvent = uasyncio.Event()
@@ -58,7 +56,7 @@ class DiceEntropyPage:
                     if was_timeout:
                         change = False
                         self.redrawAll()
-                        self.screen.QueueUpdate(delay_ms=10)
+                        screenUpdater.QueueUpdate(delay_ms=10)
                         break
                     elif self.comboAddEvent.is_set():
                         dice.increment()
@@ -72,7 +70,7 @@ class DiceEntropyPage:
             if change:
                 change = False
                 self.redrawAll()
-                self.screen.QueueUpdate(delay_ms=10)
+                screenUpdater.QueueUpdate(delay_ms=10)
 
             
     async def next(self):
@@ -87,7 +85,7 @@ class DiceEntropyPage:
         self.pos.increment()
         if not self.comboPressLock.locked():
             self.redrawAll()
-            self.screen.QueueUpdate(delay_ms=10)
+            screenUpdater.QueueUpdate(delay_ms=10)
 
 
     async def back(self):
@@ -99,37 +97,36 @@ class DiceEntropyPage:
         self.pos.decrement()
         if not self.comboPressLock.locked():
             self.redrawAll()
-            self.screen.QueueUpdate(delay_ms=10)
+            screenUpdater.QueueUpdate(delay_ms=10)
 
     async def exit(self):
         print("going to menu")
-        self.inputs.stop()
+        inputManager.stop()
         
     def redrawAll(self):
-        self.screen.display.pen(15)
-        self.screen.display.clear()
-        self.screen.display.pen(0)
+        display.pen(15)
+        display.clear()
+        display.pen(0)
 
         if self.pos.get() > 132:
             for i in range(0, 142): # exclusive (132 is omitted)
                 if self.diceCapture[i] == 0:
                     break
 
-                drawDice(self.screen.display, i, self.diceCapture[i], shiftY=11)
-            drawIndicator(self.screen.display, self.pos.get(), shiftY=11)
+                drawDice(display, i, self.diceCapture[i], shiftY=11)
+            drawIndicator(display, self.pos.get(), shiftY=11)
         else:
             for i in range(0, 142): # exclusive (132 is omitted)
                 if self.diceCapture[i] == 0:
                     break
 
-                drawDice(self.screen.display, i, self.diceCapture[i])
-            drawIndicator(self.screen.display, self.pos.get())
+                drawDice(display, i, self.diceCapture[i])
+            drawIndicator(display, self.pos.get())
 
         self.prepareUI()
 
 
     def prepareUI(self):
-        display = self.screen.display
         display.pen(15)
         display.rectangle(0, 114, 296, 15)
         display.rectangle(287, 0, 10, 128)
@@ -157,7 +154,6 @@ class DiceEntropyPage:
             display.text("E", 291, 102, 1.5)
         
     def clear(self):
-        display = self.screen.display
         display.update_speed(badger2040.UPDATE_NORMAL)
         display.pen(15)
         display.clear()
@@ -174,35 +170,35 @@ class DiceEntropyPage:
     
     async def start(self):
         # Setup inputs
-        self.inputs.reset()
-        self.inputs.register(Input.A, self.count)
-        self.inputs.register(Input.B, self.back)
-        self.inputs.register(Input.C, self.next)
-        self.inputs.register(Input.UP, self.exit)
-        self.inputs.register(Input.DOWN, self.done)
+        inputManager.reset()
+        inputManager.register(Input.A, self.count)
+        inputManager.register(Input.B, self.back)
+        inputManager.register(Input.C, self.next)
+        inputManager.register(Input.UP, self.exit)
+        inputManager.register(Input.DOWN, self.done)
         
         # Draw initial view
-        self.screen.display.led(95)
+        display.led(95)
         self.clear()
         self.prepareUI()
-        drawIndicator(self.screen.display, 0)
+        drawIndicator(display, 0)
 
         # Refresh screen
-        self.screen.start()
-        self.screen.QueueUpdate(delay_ms=0)
+        screenUpdater.start()
+        screenUpdater.QueueUpdate(delay_ms=0)
         await uasyncio.sleep_ms(50)
         
         # Configure for fast refreshes
-        self.screen.display.update_speed(
+        display.update_speed(
             badger2040.UPDATE_FAST
         )
-        self.screen.display.led(0)
+        display.led(0)
 
         # Start input listener
-        await self.inputs.start()
+        await inputManager.start()
         
         # Cleanup resources
-        self.screen.stop()
+        screenUpdater.stop()
 
         # Return to menu page when closed.
-        return Aliases.menu
+        return menu.run

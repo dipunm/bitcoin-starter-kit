@@ -1,9 +1,9 @@
+from apps.menu.controller import MenuController
 import uasyncio
-from apps.mnemonic_creator.screens.dice_entropy_hex import DiceEntropyHexPage
 
 async def main():
-    step = DiceEntropyHexPage().start
+    controller = MenuController()
     while True:
-        step = await step()
+        controller = await controller.run()
 
 uasyncio.run(main())

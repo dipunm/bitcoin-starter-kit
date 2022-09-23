@@ -1,4 +1,1 @@
-from apps.menu.screens.menu import MenuPage
-
-async def run():
-    return await MenuPage().start()
+from apps.menu.controller import MenuController

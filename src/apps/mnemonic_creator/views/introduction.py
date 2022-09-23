@@ -1,22 +1,14 @@
-import uasyncio
 import badger2040
-import apps.menu as menu
-from apps.mnemonic_creator.screens.dice_entropy import DiceEntropyPage
-from core.presentation.text_wall import TextWall
-from core.io.input_manager import Input
+import uasyncio
 from core.io import display, inputManager, screenUpdater
+from core.base.iview import IView
+from core.io.input_manager import Input
+from core.presentation.text_wall import TextWall
 
-class DiceEntropyInfoPage:
-    def __init__(self) -> None:
+class IntroductionView(IView):
+    def __init__(self, msg) -> None:
         self.textwall = TextWall(display, 5, 5, 280, 108)
-        self.textwall.setText("""Dice entropy
-        
-        Dice rolls are a great source of entropy. 132 rolls will allow us to generate 256bits of entropy in a verifiable way. Visit https://www.dipunmistry.co.uk/... for more details.
-
-        After each die roll, press the 'count' button the appropriate number of times to record the dice roll, and then press the 'next' button to progress to the next record.
-
-        To continue, press OK
-        """)
+        self.textwall.setText(msg)
 
     def prepareUI(self):        
         # Clear the UI areas
@@ -48,10 +40,6 @@ class DiceEntropyInfoPage:
         display.pen(15)
         display.clear()
         display.pen(0)
-        
-    async def nextPage(self):
-        self.goto = DiceEntropyPage().start
-        inputManager.stop()
 
     async def scrollDown(self):
         if not self.textwall.canScrollDown():
@@ -71,13 +59,12 @@ class DiceEntropyInfoPage:
         self.prepareUI()
         screenUpdater.QueueUpdate(delay_ms=300)
 
-    async def start(self):
+    async def start(self, controller):
         # Setup inputs
-        inputManager.reset()
-        inputManager.register(Input.A, self.nextPage)    
+        inputManager.register(Input.A, controller.gotoDiceBoard)
         inputManager.register(Input.UP, self.scrollUp)
         inputManager.register(Input.DOWN, self.scrollDown)
-        
+
         # Draw initial view
         display.led(95)
         self.clear()
@@ -98,8 +85,7 @@ class DiceEntropyInfoPage:
         # Start input listener
         await inputManager.start()
         
-        # Cleanup resources
+    async def dispose(self):
+        inputManager.stop()
+        inputManager.reset()
         screenUpdater.stop()
-
-        # Return to menu page when closed.
-        return self.goto or menu.run

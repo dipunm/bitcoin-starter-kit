@@ -1,24 +1,25 @@
-import uasyncio
-import badger2040
-import apps.menu as menu
-from core.util.asynclib import oneOf
-from apps.mnemonic_creator.helpers.die_renderer import drawDice, drawIndicator
 from core.tracking.counter import Counter
+from core.base.iview import IView
 from core.io.input_manager import Input
 from core.io import display, inputManager, screenUpdater
+from apps.mnemonic_creator.helpers.die_renderer import drawDice, drawIndicator
+from core.util.asynclib import oneOf
+import uasyncio
+import badger2040
+
 
 async def sleep_ms(ms):
     # uasyncio.sleep_ms cannot be passed 
     # directly into uasyncio.create_task :/
     return await uasyncio.sleep_ms(ms)
 
-class DiceEntropyPage:
-    def __init__(self) -> None:
-        self.pos = Counter(0, 141) # 0 - 131 inclusive, total: 132
+class DiceBoardView(IView):
+    def __init__(self, size) -> None:
+        self.pos = Counter(0, size - 1)
         self.comboPressLock = uasyncio.Lock()
         self.comboBreakEvent = uasyncio.Event()
         self.comboAddEvent = uasyncio.Event()
-        self.diceCapture = [0] * 142 # array of 0's 132 times
+        self.diceCapture = [0] * size
 
     async def count(self):
         if self.comboPressLock.locked():
@@ -99,10 +100,6 @@ class DiceEntropyPage:
             self.redrawAll()
             screenUpdater.QueueUpdate(delay_ms=10)
 
-    async def exit(self):
-        print("going to menu")
-        inputManager.stop()
-        
     def redrawAll(self):
         display.pen(15)
         display.clear()
@@ -162,20 +159,13 @@ class DiceEntropyPage:
     def canComplete(self):
         return len(list(filter(lambda x: x == 0, self.diceCapture))) == 0
 
-    async def done(self):
-        if not self.canComplete():
-            return
-        
-        print("I WOULD WORK!!!")
-    
-    async def start(self):
+    async def start(self, controller):
         # Setup inputs
-        inputManager.reset()
         inputManager.register(Input.A, self.count)
         inputManager.register(Input.B, self.back)
         inputManager.register(Input.C, self.next)
-        inputManager.register(Input.UP, self.exit)
-        inputManager.register(Input.DOWN, self.done)
+        inputManager.register(Input.UP, controller.exit)
+        inputManager.register(Input.DOWN, controller.submitEntropy)
         
         # Draw initial view
         display.led(95)
@@ -196,9 +186,9 @@ class DiceEntropyPage:
 
         # Start input listener
         await inputManager.start()
-        
-        # Cleanup resources
-        screenUpdater.stop()
 
-        # Return to menu page when closed.
-        return menu.run
+
+    async def dispose(self):
+        screenUpdater.stop()
+        inputManager.stop()
+        inputManager.reset()

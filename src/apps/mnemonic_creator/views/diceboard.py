@@ -144,11 +144,11 @@ class DiceBoardView(IView):
         display.text("I", 291, 32, 1.5)
         display.text("T", 291, 41, 1.5)
         
-        if self.canComplete():
-            display.text("D", 291, 75, 1.5)
-            display.text("O", 291, 84, 1.5)
-            display.text("N", 291, 93, 1.5)
-            display.text("E", 291, 102, 1.5)
+        # if self.canComplete():
+        display.text("D", 291, 75, 1.5)
+        display.text("O", 291, 84, 1.5)
+        display.text("N", 291, 93, 1.5)
+        display.text("E", 291, 102, 1.5)
         
     def clear(self):
         display.update_speed(badger2040.UPDATE_NORMAL)

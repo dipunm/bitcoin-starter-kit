@@ -1,0 +1,10 @@
+---
+title: Bitcoin Starter Kit
+subtitle: The practical guide to really owning bitcoin
+author: Dipun Mistry
+documentclass: scrbook
+classoption:
+    - openany
+    - oneside
+    - titlepage
+---

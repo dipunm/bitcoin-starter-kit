@@ -14,12 +14,12 @@ async def sleep_ms(ms):
     return await uasyncio.sleep_ms(ms)
 
 class DiceBoardView(IView):
-    def __init__(self, size) -> None:
-        self.pos = Counter(0, size - 1)
+    def __init__(self, board) -> None:
+        self.diceCapture = board
+        self.pos = Counter(0, len(self.diceCapture) - 1)
         self.comboPressLock = uasyncio.Lock()
         self.comboBreakEvent = uasyncio.Event()
         self.comboAddEvent = uasyncio.Event()
-        self.diceCapture = [0] * size
 
     async def count(self):
         if self.comboPressLock.locked():
@@ -28,12 +28,10 @@ class DiceBoardView(IView):
             pos = self.pos.get()
             dice = Counter(1, 6, loop=True) # 1 - 6 inclusive
 
-            print("START>>", self.diceCapture[pos])
             if (self.diceCapture[pos] != 0):
                 dice.set(self.diceCapture[pos] + 1)
 
             self.diceCapture[pos] = dice.get()
-            print("DICE>>>:", dice.get(), pos, self.diceCapture[pos])
             change = True
             async with self.comboPressLock:
                 while True:
@@ -106,14 +104,14 @@ class DiceBoardView(IView):
         display.pen(0)
 
         if self.pos.get() > 132:
-            for i in range(0, 142): # exclusive (132 is omitted)
+            for i in range(0, len(self.diceCapture)):
                 if self.diceCapture[i] == 0:
                     break
 
                 drawDice(display, i, self.diceCapture[i], shiftY=11)
             drawIndicator(display, self.pos.get(), shiftY=11)
         else:
-            for i in range(0, 142): # exclusive (132 is omitted)
+            for i in range(0, len(self.diceCapture)):
                 if self.diceCapture[i] == 0:
                     break
 

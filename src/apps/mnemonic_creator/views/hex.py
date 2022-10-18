@@ -17,9 +17,9 @@ class HexView:
         chunked_hex_chars = [' '.join(str(digit) for digit in hex_chars[i:i + N_HEX_PER_WORD]) for i in range(0, len(hex_chars), N_HEX_PER_WORD)]
         hexMsg = '\n '+'\n\n '.join(['  '.join(chunked_hex_chars[i:i + N_WORDS_PER_LINE]) for i in range(0, len(chunked_hex_chars), N_WORDS_PER_LINE)])
         
-        self.textwallrolls = TextWallMono(display, 5, 5, 280, 108)
+        self.textwallrolls = TextWallMono(display, 18, 5, 267, 108)
         self.textwallrolls.setText(dieMsg)
-        self.textwallhex = TextWallMono(display, 2, 3, 280, 112)
+        self.textwallhex = TextWallMono(display, 15, 3, 270, 110)
         self.textwallhex.setText(hexMsg)
 
     def prepareUI(self):        
@@ -45,7 +45,7 @@ class HexView:
     
     async def start(self, controller):
         # Setup inputs
-        inputManager.register(Input.A, controller.exit)
+        inputManager.register(Input.A, controller.explainChecksum)
 
         # Draw initial view
         display.led(95)

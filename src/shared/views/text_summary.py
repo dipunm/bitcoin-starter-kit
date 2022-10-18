@@ -6,9 +6,10 @@ from core.io.input_manager import Input
 from core.presentation.text_wall import TextWall
 
 class TextSummaryView(IView):
-    def __init__(self, msg) -> None:
+    def __init__(self, msg, action) -> None:
         self.textwall = TextWall(display, 5, 5, 280, 108)
         self.textwall.setText(msg)
+        self.action = action
 
     def prepareUI(self):        
         # Clear the UI areas
@@ -61,7 +62,7 @@ class TextSummaryView(IView):
 
     async def start(self, controller):
         # Setup inputs
-        inputManager.register(Input.A, controller.gotoDiceBoard)
+        inputManager.register(Input.A, self.action)
         inputManager.register(Input.UP, self.scrollUp)
         inputManager.register(Input.DOWN, self.scrollDown)
 

@@ -1,10 +1,16 @@
 ---
 title: Bitcoin Starter Kit
-subtitle: The practical guide to really owning bitcoin
+subtitle: The practical guide to securing bitcoin
 author: Dipun Mistry
 documentclass: scrbook
 classoption:
     - openany
     - oneside
     - titlepage
+header-includes:
+    - \usepackage{glossaries}
+    - \makenoidxglossaries
+    - \include{<path to glossary definitions file>}
+include-after:
+    - \printnoidxglossary[sort=word]
 ---

@@ -1,6 +1,7 @@
 from core.io import display, inputManager, screenUpdater
 from core.io.input_manager import Input
 from core.base.iview import IView
+from core.util.image import readImageBin
 import badger2040
 
 class MenuView(IView):
@@ -16,14 +17,16 @@ class MenuView(IView):
     def drawUI(self):
         display.pen(0)
         display.thickness(1)
-        display.rectangle(10, 20, 70, 70)
+        display.image(readImageBin("bin/Checksum.bin"), 96, 96, 0, 0)
+        display.image(readImageBin("bin/Keys.bin"), 96, 96, 98, 0)
+        display.image(readImageBin("bin/Compose.bin"), 96, 96, 196, 0)
 
         display.pen(0)
         display.thickness(1)
-        display.font("bitmap8")
-        display.text("dice", 32, 118, 1)
-        display.text("words", 139, 118, 1)
-        display.text("xor", 247, 118, 1)
+        display.font("sans")
+        display.text("GENERATE", 16, 108, 0.45)
+        display.text("MANAGE", 123, 108, 0.45)
+        display.text("COMBINE", 211, 108, 0.45)
 
     async def start(self, controller):
         # Setup inputs

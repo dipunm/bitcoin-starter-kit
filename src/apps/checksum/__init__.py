@@ -1,0 +1,1 @@
+from apps.checksum.controller import ChecksumController

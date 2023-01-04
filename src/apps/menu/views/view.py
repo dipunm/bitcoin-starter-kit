@@ -7,9 +7,6 @@ import badger2040
 class MenuView(IView):
     def clear(self):
         display.update_speed(badger2040.UPDATE_NORMAL)
-        display.pen(0)
-        display.clear()
-        display.update()
         display.pen(15)
         display.clear()
         display.update()
@@ -30,7 +27,7 @@ class MenuView(IView):
 
     async def start(self, controller):
         # Setup inputs
-        inputManager.register(Input.A, controller.gotoMnemonicCreator)
+        inputManager.register(Input.A, controller.gotoChecksum)
 
         # Draw initial view
         display.led(95)

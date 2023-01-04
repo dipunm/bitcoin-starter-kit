@@ -1,7 +1,8 @@
 import math
+from badger2040 import Badger2040
 
 class TextWall:
-    def __init__(self, display, anchor_x: int, anchor_y: int, width: int, height: int) -> None:
+    def __init__(self, display: Badger2040, anchor_x: int, anchor_y: int, width: int, height: int) -> None:
         self.width = width
         self.height = height
         self.anchor_x = anchor_x
@@ -10,14 +11,14 @@ class TextWall:
         self.scrollRow = 0
         self.lineHeight = 15
         self.maxRow = math.floor(self.height / self.lineHeight)
+        self.font = "sans"
+        self.size = 0.43
 
 
-    def setText(self, text):
+    def setText(self, text: str):
         self.text = text
 
-        self.display.pen(0)
-        self.display.thickness(1)
-        self.display.font("bitmap8")
+        self.display.font(self.font)
 
         self.lines = []
         lines = self.text.split('\n')
@@ -27,7 +28,7 @@ class TextWall:
             words = line.split(" ")
             for word in words:
                 toPrint = " " + word if col > 0 else word
-                word_width = self.display.measure_text(toPrint, 1)
+                word_width = self.display.measure_text(toPrint, self.size)
                 if col > 0 and word_width + col > self.width:
                     # Move to next line
                     row += 1
@@ -67,6 +68,10 @@ class TextWall:
     def render(self):
         self.clearSpace()
 
+        self.display.font(self.font)
+        self.display.pen(0)
+        self.display.thickness(1)
+
         for i in range(self.scrollRow, self.scrollRow + self.maxRow):
             if i >= len(self.lines):
                 break
@@ -75,5 +80,5 @@ class TextWall:
                 self.lines[i], 
                 self.anchor_x, 
                 self.anchor_y + ((i - self.scrollRow) * self.lineHeight), 
-                1
+                self.size
             )

@@ -13,11 +13,9 @@ We will cover topics such as:
 - Taking corrective and preventative measures after an incident.
 - Future proofing with considerations for disaster recovery and inheritance setups.
 
-When getting started, it makes sense to use the different Bitcoin related apps, services and tools that interest you; play with them, and get a feel for what Bitcoin can do for you.
+_When getting started, it makes sense to use the different Bitcoin related apps, services and tools that interest you; play with them, and get a feel for what Bitcoin can do for you. It is NOT necessary to learn every aspect of this guide before exploring Bitcoin; instead, as you broaden your understanding, you can take the steps required to improve the security of your balances as you see fit._
 
-However, you'll get the most from this guide when you decide to start _saving_ with bitcoin. There will never be more than 21 million bitcoin in the world, its supply cannot be controlled or manipulated by any government or institution, and it has no limits or restrictions imposed by political agendas. We often find that, for these reasons, learning how to save and protect your bitcoin becomes more important over time, especially as others around you start to understand, appreciate and value bitcoin too.
-
-_This guide is purely a practical getting started guide for those who want to learn how to handle bitcoin hands on. We won't focus too deeply on things like "what is money?" and we won't speculate on "how much bitcoin makes me rich?"_
+You will get the most from this guide when you decide to start _saving_ with bitcoin. There will never be more than 21 million bitcoin in the world, its supply cannot be controlled or manipulated by any government or institution, and it has no limits or restrictions imposed by political agendas. We often find that, for these reasons, learning how to save and protect your bitcoin becomes more important over time, especially as others around you start to understand, appreciate and value bitcoin too.
 
 To complement this guide, we have developed a companion device composed of custom software paired with the Badger2040: a cheap electronic device manufactured by Pimironi in the UK.
 
@@ -26,9 +24,9 @@ To complement this guide, we have developed a companion device composed of custo
 - It has no wireless transmitters that might leak sensitive data.
 - It is pre-built with buttons and a screen, so it requires no electronic wiring or assembly.
 
-Some sections are designed to be thought provoking. We will discuss technical vulnerabilities and how to safely navigate and avoid security breaches and unexpected compromises, as well as offering practical, non-technical solutions that anyone can easily follow. 
+Some sections are designed to be thought provoking. We will discuss technical vulnerabilities and how to safely navigate and avoid security breaches and unexpected compromises, and summarise by offerering practical, non-technical solutions that anyone can easily follow. 
 
-While some threats may seem unlikely, you should consider whether it is really worth the convenience to overlook them, now and into the future. Ultimately, understanding the risks you are taking, and how you may advance in the future if your circumstances change, is never a bad thing.
+While some of the threats we discuss may seem unlikely, take the time to consider whether it is really worth the convenience to overlook them; now and into the future. Even if you choose convenience based on your current circumstances, it is always beneficial to understand the risks you are taking and how you might improve your situation in the future if your circumstances change.
 
 ## Objectives
 ### Educate

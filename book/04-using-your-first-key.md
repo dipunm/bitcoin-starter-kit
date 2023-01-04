@@ -44,75 +44,51 @@ echo→${HASH^^}→|→cut→-c1
 ```bash
 #!/bin/bash
 ARGS=$(echo ${@^^} | tr -d " ")
-
-n=${#ARGS}; [ $n -ne 35 ] \
-  && echo "E:LEN $n" >&2 \
-  && exit 1
-
-grep -qvE "^[0-9A-F]+$" <<< "$ARGS" \
-  && echo "E:RANGE" >&2 \
-  && exit 1
-
+grep -qvEx "[0-9A-F]{35}" <<< $ARGS \
+ && echo "BAD INPUT" && exit 1
 HEX=$(fold -w3 <<< "$ARGS"0)
-
-BIN=$(bc <<< "obase=2;ibase=16;$HEX" \
-  | xargs printf "%012d\n" \
-  | rev | cut -c-11 | rev)
-
-OUTPUT=$(echo "obase=16;ibase=2;" \
-  $(printf "%s" $BIN) | bc)
-
-SHA=$(echo "${OUTPUT:0:32}" | xxd -p -r \
-  | openssl dgst -sha256 | cut -d " " -f2)
-
-echo ${SHA^^} | cut -c1
+BIN=$(bc <<< "obase=2;ibase=16;$(sed "s/$/%800/" <<< $HEX)")
+ENT=$(bc <<< "obase=16;ibase=2;$(printf "%011d" $BIN)")
+SUM=$(xxd -p -r <<< ${ENT:0:32} | openssl dgst -sha256 | cut -d " " -f2)
+echo ${SUM^^} | cut -c1
 ```
 
 ```bash
 #!/bin/bash
-
 # Uppercase and remove spaces
 ARGS=$(echo ${@^^} | tr -d " ")
 
-# Validate length: 35 characters
-n=${#ARGS}; [ $n -ne 35 ] \
-  && echo "E:LEN $n" >&2 \
-  && exit 1
-
-# Validate character range: 0-F (hexadecimal)
-grep -E "[^0-9A-F]" <<< "$ARGS" \
-  && echo "E:RANGE" >&2 \
-  && exit 1
+# Validate: 35 characters hexadecimal
+grep -qvEx "[0-9A-F]{35}" <<< $ARGS \
+  && echo "BAD INPUT" && exit 1
 
 # Append 0 for last character and split into 12 chunks
 HEX=$(fold -w3 <<< "$ARGS"0)
 
-# Convert to base2 (binary),
-# format as 12 bit with leading 0s,
-# and drop first bit from each chunk
-# This gives us the original random number in base2
-BIN=$(bc <<< "obase=2;ibase=16;$HEX" \
-  | xargs printf "%012d\n" \
-  | rev | cut -c-11 | rev)
+# Convert to base2 (binary) and use the mod
+# (%) oparator to isolate the first 11 bits.
+BIN=$(bc <<< "obase=2;ibase=16;$(sed "s/$/%800/" <<< $HEX)")
 
-# Convert to base 16 (hexadecimal)
-OUTPUT=$(echo "obase=16;ibase=2;" \
-  $(printf "%s" $BIN) | bc)
+# Pad each chunk to 11 digits (prefixed with 0)
+# and concatenate to create a single 132 bit number
+# then convert to base 16 (hexadecimal)
+ENT=$(bc <<< "obase=16;ibase=2;$(printf "%011d" $BIN)")
 
-# Take first 16 bytes (128 bits)
-SHA=$(echo "${OUTPUT:0:32}F" | xxd -p -r \
-  | openssl dgst -sha256 | cut -d " " -f2)
+# Take first 16 bytes (128 bits) and get SHA256 hash of data
+SUM=$(xxd -p -r <<< ${ENT:0:32} | openssl dgst -sha256 | cut -d " " -f2)
 
 # Uppercase and print first character
-echo ${SHA^^} | cut -c1
+echo ${SUM^^} | cut -c1
 ```
 
-```
+280/280 characters:
+```bash
 #!/bin/bash
-A=$(echo ${@^^}|tr -d " ")
-H=$(fold -w3<<<"$A"0)
-B=$(bc<<<"obase=2;ibase=16;$H"|xargs printf "%012d\n"|rev|cut -c-11|rev)
-O=$(echo "obase=16;ibase=2;"$(printf "%s" $B)|bc)
-S=$(echo "${O:0:32}"|xxd -p -r|openssl dgst -sha256|cut -d " " -f2)
-cut -c1<<<${S^^}
+A=$(tr -d " "<<<${@^^})
+grep -qvEx "[0-9A-F]{35}"<<<$A &&echo X &&exit 1
+H=$(fold -w3<<<$A)0
+B=$(bc<<<"obase=2;ibase=16;$(sed "s/$/%800/"<<<$H)")
+N=$(bc<<<"obase=16;ibase=2;$(printf "%011d" $B)")
+C=$(xxd -p -r<<<$N|openssl dgst -sha256|cut -d " " -f2)
+cut -c1<<<${C^^}
 ```

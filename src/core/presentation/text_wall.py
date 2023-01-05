@@ -12,7 +12,7 @@ class TextWall:
         self.lineHeight = 15
         self.maxRow = math.floor(self.height / self.lineHeight)
         self.font = "sans"
-        self.size = 0.43
+        self.size = 0.5
 
 
     def setText(self, text: str):

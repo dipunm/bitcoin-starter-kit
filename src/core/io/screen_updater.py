@@ -24,6 +24,7 @@ class ScreenUpdater:
         self.needs_update = False
         self.update_time = time.ticks_ms()
         self.partialQueue: list[UpdateBox] = []
+        self.replaceableAsyncs = {}
 
     def start(self):
         self.thread = _thread.start_new_thread(self._main, ())
@@ -40,23 +41,31 @@ class ScreenUpdater:
         self.variableLock.acquire()
         self.needs_update = True
         self.variableLock.release()
-        self.DelayAnyUpdate(delay_ms=delay_ms)
+        self.DelayUpdateLoop(delay_ms=delay_ms)
 
-    def QueuePartialUpdate(self, box: UpdateBox, delay_ms = 0):
-        uasyncio.create_task(self._updatePartial(box, delay_ms))
+    def QueuePartialUpdate(self, name: str, box: UpdateBox, delay_ms = 500):
+        self.variableLock.acquire()
+        if self.replaceableAsyncs.get(name) is not None:
+            self.replaceableAsyncs[name].cancel()
+            del self.replaceableAsyncs[name]
 
-    def DelayAnyUpdate(self, delay_ms = 500):
+        self.replaceableAsyncs[name] = uasyncio.create_task(self._updatePartial(box, delay_ms))
+        self.variableLock.release()
+
+    def DelayUpdateLoop(self, delay_ms = 500):
         self.variableLock.acquire()
         self.update_time = time.ticks_add(time.ticks_ms(), delay_ms)
         self.variableLock.release()
 
 
     async def _updatePartial(self, box: UpdateBox, delay_ms = 0):
-        await uasyncio.sleep_ms(delay_ms)
-        self.variableLock.acquire()
-        self.partialQueue.append(box)
-        self.variableLock.release()
-
+        try:
+            await uasyncio.sleep_ms(delay_ms)
+            self.variableLock.acquire()
+            self.partialQueue.append(box)
+            self.variableLock.release()
+        except uasyncio.CancelledError:
+            return # all good.
 
     def _main(self):
         time.sleep(1)
@@ -71,8 +80,15 @@ class ScreenUpdater:
                 self.variableLock.release()
 
                 self.display.update()
+            elif len(self.partialQueue) > 2:
+                # Too many partial updates queued.. do a full one
+                self.needs_update = False
+                self.partialQueue.clear()
+                self.variableLock.release()
 
+                self.display.update()
             elif len(self.partialQueue) > 0:
+
                 tmpQueue = self.partialQueue.copy()
                 self.partialQueue.clear()
                 self.variableLock.release()

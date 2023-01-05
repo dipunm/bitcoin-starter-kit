@@ -72,7 +72,7 @@ class DiceEntropyHexPage:
         if not self.textwall.canScrollDown():
             return
         
-        self.textwall.scrollDown()
+        self.textwall.pageDown()
         self.textwall.render()
         self.prepareUI()
         screenUpdater.QueueUpdate(delay_ms=300)
@@ -81,7 +81,7 @@ class DiceEntropyHexPage:
         if not self.textwall.canScrollUp():
             return
         
-        self.textwall.scrollUp()
+        self.textwall.pageUp()
         self.textwall.render()
         self.prepareUI()
         screenUpdater.QueueUpdate(delay_ms=300)

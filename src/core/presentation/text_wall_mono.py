@@ -62,21 +62,38 @@ class TextWallMono:
     def canScrollDown(self):
         return len(self.lines) - self.maxRow - self.scrollRow - 1 > 0
 
-    def scrollUp(self):
+    def pageUp(self):
         if self.canScrollUp():
             self.scrollRow -= min(self.maxRow, self.scrollRow)
 
-    def scrollDown(self):
+    def pageDown(self):
         if self.canScrollDown():
             self.scrollRow += min(
                 self.maxRow - 1,
                 len(self.lines) - self.scrollRow - self.maxRow - 1
             )
 
+    def scrollUp(self):
+        if self.canScrollUp():
+            self.scrollRow -= 1
+
+    def scrollDown(self):
+        if self.canScrollDown():
+            self.scrollRow += 1
+
+    def scrollTop(self):
+        self.scrollRow = 0
+
+    def scrollEnd(self):
+        self.scrollRow = len(self.lines) - self.maxRow - 1
+
     def clearSpace(self):
+        # Offset is used in case of non bitmap text
+        # which renders on the y coordinate
+        offset = 10
         self.display.pen(15)
         self.display.rectangle(
-            self.anchor_x, self.anchor_y, self.width, self.height)
+            self.anchor_x, max(0, self.anchor_y - offset), self.width, self.height + offset)
         self.display.pen(0)
 
     def render(self, clearSpace=True):
@@ -85,6 +102,7 @@ class TextWallMono:
 
         space_width = self.letter_width if self.space_width == None else self.space_width
 
+        self.display.font(self.font)
         self.display.pen(0)
         self.display.thickness(self.thickness)
         for row in range(self.scrollRow, self.scrollRow + self.maxRow):

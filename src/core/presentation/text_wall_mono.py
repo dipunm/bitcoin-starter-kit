@@ -28,7 +28,9 @@ class TextWallMono:
 
     def setText(self, text: str):
         self.text = text
+        self.resetText()
 
+    def resetText(self): 
         self.display.font(self.font)
         self.letter_width = self.display.measure_text("M", self.size)
         space_width = self.letter_width if self.space_width == None else self.space_width

@@ -65,9 +65,10 @@ class TextWall:
         self.display.rectangle(self.anchor_x, self.anchor_y, self.width, self.height)
         self.display.pen(0)
 
-    def render(self):
-        self.clearSpace()
-
+    def render(self, clearSpace=True):
+        if clearSpace:
+            self.clearSpace()
+        
         self.display.font(self.font)
         self.display.pen(0)
         self.display.thickness(1)

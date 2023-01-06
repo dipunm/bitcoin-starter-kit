@@ -13,20 +13,27 @@ from core.tracking.counter import Counter
 
 class DataInputView(IView):
     def __init__(self) -> None:
-        self.controlsUI = ControlsBar(
-            display, A="SELECT", B="DEL")
-        # self.keyboard = TextWallMono(display, 20, 92, SCREEN_WIDTH - 40, 16)
-        # self.output = TextWallMono(display, 35, 40, 210, 32)
-        # self.instructions = TextWall(display, 5, 10, SCREEN_WIDTH - 25, 15)
-        self.keyboard = TextWallMono(display, SCREEN_WIDTH - 16, 20, 11, SCREEN_HEIGHT - 40)
-        
-        outputW = 10*(6+2)*3
+        # 10 * (3 for "12.", 3 for HEX, 2 for space after each)
+        outputW = 10*(3+3+2)*3
         centerXPos = int(round((SCREEN_WIDTH - outputW)/2)) - 10
-        self.output = TextWallMono(display, centerXPos, 36, outputW, 64)
         self.instructions = TextWall(display, 5, 10, SCREEN_WIDTH - 25, 15)
+        self.keyboard = TextWallMono(display, SCREEN_WIDTH - 16, 20, 11, SCREEN_HEIGHT - 40)
+        self.controlsUI = ControlsBar(display, A="SELECT", B="DEL")
+        self.output = TextWallMono(display, centerXPos, 36, outputW, 64)
+
         self.keyboardPos = Counter(0, 15, True)
         self.keyboardKeys = [hex(i)[-1].upper() for i in range(0, 16)]
         self.outputData = []
+
+    def keyboardDone(self, controller):
+        async def action():
+            if len(self.outputData) != 35:
+                return
+            
+            await controller.showResults(self.outputData)
+        
+        return action
+
 
     async def keyboardSelect(self):
         if len(self.outputData) > 34:
@@ -47,11 +54,20 @@ class DataInputView(IView):
         text = " ".join([x for sublist in zip(labels, chunks) for x in sublist])
         self.output.setText(text)
         self.output.render()
+
+        if len(self.outputData) == 35:
+            self.controlsUI.C = "DONE"
+            self.controlsUI.A = None
+            self.controlsUI.render()
+        else:
+            self.controlsUI.C = None
+            self.controlsUI.A = "SELECT"
+            self.controlsUI.render()
+
         if queue:
             screenUpdater.QueueUpdate(delay_ms=300)
 
     async def keyboardDown(self):
-        print("noticedown")
         self.keyboardPos.increment()
         if self.keyboard.canScrollDown():
             self.keyboard.scrollDown()
@@ -84,6 +100,7 @@ class DataInputView(IView):
         # Setup inputs
         inputManager.register(Input.A, self.keyboardSelect)
         inputManager.register(Input.B, self.keyboardDel)
+        inputManager.register(Input.C, self.keyboardDone(controller))
         inputManager.register(Input.DOWN, self.keyboardDown)
         inputManager.register(Input.UP, self.keyboardUp)
 

@@ -35,17 +35,10 @@ jobs:
       id: cache-micropython-src
       uses: actions/cache@v3
       with:
-        path: ${{env.GITHUB_WORKSPACE}}/micropython
+        path: |
+          ${{env.GITHUB_WORKSPACE}}/micropython
+          ${{env.GITHUB_WORKSPACE}}/pimoroni-pico
         key: workspace-micropython-${{env.MICROPYTHON_VERSION}}
-        restore-keys: |
-          workspace-micropython-${{env.MICROPYTHON_VERSION}}
-
-    - name: Workspace Cache Pimoroni
-      id: cache-pimoroni-src
-      uses: actions/cache@v3
-      with:
-        path: ${{env.GITHUB_WORKSPACE}}/pimoroni-pico
-        key: workspace-micropython-${{env.PIMORONI_VERSION}}
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}
 
@@ -59,7 +52,7 @@ jobs:
           ccache-micropython-badger2040-
     
     - name: Checkout Pimoroni Pico
-      if: steps.cache-pimoroni-src.outputs.cache-hit != 'true'
+      if: steps.cache-micropython-src.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: pimoroni/pimoroni-pico
@@ -96,6 +89,7 @@ jobs:
       run: make
       
     - name: "HACK: MicroPython Board Fixups"
+      if: steps.cache-micropython-src.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython/ports/rp2
       run: |

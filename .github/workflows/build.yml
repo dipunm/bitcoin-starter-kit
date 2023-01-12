@@ -10,9 +10,15 @@ jobs:
     env:
       MICROPYTHON_VERSION: 9dfabcd6d3d080aced888e8474e921f11dc979bb
       BOARD_TYPE: PIMORONI_BADGER2040
+      PIMORONI_PICO_PATH: ${{GITHUB_WORKSPACE}}/pimoroni-pico
   
     
     steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+      with:
+        path: project
+
     - name: Checkout Pimoroni Pico
       uses: actions/checkout@v2
       with:
@@ -52,7 +58,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        ../../../pimoroni-pico/micropython/_board/board-fixup.sh badger2040 ${{env.BOARD_TYPE}} ../../../pimoroni-pico/micropython/_board      
+        ${{env.PIMORONI_PICO_PATH}}/micropython/_board/board-fixup.sh badger2040 ${{env.BOARD_TYPE}} ${{env.PIMORONI_PICO_PATH}}/micropython/_board      
       
     - name: Install Compiler & CCache
       run: |
@@ -63,7 +69,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=../../../pimoroni-pico/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -S ${{GITHUB_WORKSPACE}}/project -B build-${{env.BOARD_TYPE}}-without-badger-os -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=${{env.PIMORONI_PICO_PATH}}/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Build MicroPython
       shell: bash
@@ -76,5 +82,5 @@ jobs:
     - name: Store .uf2 as artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{env.RELEASE_FILE}}-without-badger-os.uf2
+        name: firmware.uf2
         path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}-without-badger-os/firmware.uf2

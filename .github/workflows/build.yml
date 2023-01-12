@@ -42,6 +42,16 @@ jobs:
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.PIMORONI_VERSION}}
 
+    - name: Workspace Cache secp256k1
+      id: cache-secp256k1-src
+      uses: actions/cache@v3
+      with:
+        path: ${{env.GITHUB_WORKSPACE}}/secp256k1-embedded
+        key: workspace-secp256k1-${{env.SECP256K1_VERSION}}
+        restore-keys: |
+          workspace-secp256k1-${{env.SECP256K1_VERSION}}
+
+
     - name: Compiler Cache
       uses: actions/cache@v3
       with:
@@ -95,6 +105,16 @@ jobs:
       run: |
         ${{env.PIMORONI_PICO_PATH}}/micropython/_board/board-fixup.sh badger2040 ${{env.BOARD_TYPE}} ${{env.PIMORONI_PICO_PATH}}/micropython/_board      
       
+
+    - name: Checkout secp256k1 Pico
+      if: steps.cache-secp256k1-src.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: kdmukai/secp256k1-embedded
+        ref: ${{env.SECP256K1_VERSION}}
+        path: secp256k1-embedded
+        submodules: true
+
     - name: Install Compiler & CCache
       run: |
         sudo apt update && sudo apt install ccache gcc-arm-none-eabi
@@ -104,7 +124,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DFIRMWARE_DIR=$GITHUB_WORKSPACE/project/firmware -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DMODULE_SECP256K1_ENABLED=1 -DFIRMWARE_DIR=$GITHUB_WORKSPACE/project/firmware -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Build MicroPython
       shell: bash

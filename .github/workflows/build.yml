@@ -1,0 +1,74 @@
+name: C/C++ CI
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+    env:
+      MICROPYTHON_VERSION: 9dfabcd6d3d080aced888e8474e921f11dc979bb
+      BOARD_TYPE: PIMORONI_BADGER2040
+  
+    
+    steps:
+    - name: Checkout Pimoroni Pico Libraries
+      uses: actions/checkout@v2
+      with:
+        repository: pimoroni/pimoroni-pico
+        path: pimoroni-pico
+
+    - name: Checkout Pico SDK
+      uses: actions/checkout@v2
+      with:
+        repository: micropython/micropython
+        ref: ${{env.MICROPYTHON_VERSION}}
+        path: micropython
+        submodules: false
+
+    - name: Fetch base MicroPython submodules
+      shell: bash
+      working-directory: micropython
+      run: git submodule update --init
+
+    - name: Fetch Pico SDK submodules
+      shell: bash
+      working-directory: micropython/lib/pico-sdk
+      run: git submodule update --init
+
+    - name: Build mpy-cross
+      shell: bash
+      working-directory: micropython/mpy-cross
+      run: make
+      
+    - name: "HACK: MicroPython Board Fixups"
+      shell: bash
+      working-directory: micropython/ports/rp2
+      run: |
+        ../../../pimoroni-pico/micropython/_board/board-fixup.sh badger2040 ${{env.BOARD_TYPE}} ../../../pimoroni-pico/micropython/_board      
+      
+    - name: Install Compiler & CCache
+      run: |
+        sudo apt update && sudo apt install ccache gcc-arm-none-eabi
+        python3 -m pip install pillow
+    
+    - name: Configure MicroPython (No BadgerOS)
+      shell: bash
+      working-directory: micropython/ports/rp2
+      run: |
+        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=../../../pimoroni-pico-${GITHUB_SHA}/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+    - name: Build MicroPython (No BadgerOS)
+      shell: bash
+      working-directory: micropython/ports/rp2
+      run: |
+        ccache --zero-stats || true
+        cmake --build build-${{env.BOARD_TYPE}}-without-badger-os -j 2
+        ccache --show-stats || true
+        
+    - name: Store .uf2 as artifact (No BadgerOS)
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{env.RELEASE_FILE}}-without-badger-os.uf2
+        path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}-without-badger-os/firmware.uf2

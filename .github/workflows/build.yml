@@ -9,24 +9,57 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       MICROPYTHON_VERSION: 9dfabcd6d3d080aced888e8474e921f11dc979bb
+      PIMORONI_VERSION: v1.19.10
       BOARD_TYPE: PIMORONI_BADGER2040
       PIMORONI_PICO_PATH: $GITHUB_WORKSPACE/pimoroni-pico
   
     
     steps:
+    
+    - name: Workspace Cache Micropython
+      id: cache-micropython-src
+      uses: actions/cache@v3
+      with:
+        path: ${{runner.workspace}}/micropython
+        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}
+        restore-keys: |
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}
+
+    - name: Workspace Cache Pimoroni
+      id: cache-pimoroni-src
+      uses: actions/cache@v3
+      with:
+        path: ${{runner.workspace}}/pimoroni-pico
+        key: workspace-micropython-${{env.PIMORONI_VERSION}}
+        restore-keys: |
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}
+
+    - name: Compiler Cache
+      uses: actions/cache@v3
+      with:
+        path: /home/runner/.ccache
+        key: ccache-compiler-${{github.ref}}-${{github.sha}}
+        restore-keys: |
+          ccache-micropython-badger2040-${{github.ref}}
+          ccache-micropython-badger2040-
+    
     - name: Checkout source
       uses: actions/checkout@v2
       with:
         path: project
 
     - name: Checkout Pimoroni Pico
+      if: steps.cache-pimoroni-src.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: pimoroni/pimoroni-pico
-        ref: v1.19.10
+        ref: ${{env.PIMORONI_VERSION}}
         path: pimoroni-pico
+        submodules: true
+
 
     - name: Checkout Micropython
+      if: steps.cache-micropython-src.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: micropython/micropython
@@ -35,21 +68,19 @@ jobs:
         submodules: false
 
     - name: Fetch base MicroPython submodules
+      if: steps.cache-micropython-src.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython
       run: git submodule update --init
 
     - name: Fetch Pico SDK submodules
+      if: steps.cache-micropython-src.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython/lib/pico-sdk
       run: git submodule update --init
       
-    - name: Fetch Pimoroni Pico submodules
-      shell: bash
-      working-directory: pimoroni-pico
-      run: git submodule update --init
-
     - name: Build mpy-cross
+      if: steps.cache-micropython-src.outputs.cache-hit != 'true'
       shell: bash
       working-directory: micropython/mpy-cross
       run: make
@@ -69,7 +100,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake -S $GITHUB_WORKSPACE/project/firmware -B build-${{env.BOARD_TYPE}}-without-badger-os -DMAKE_SOURCE_DIR=$GITHUB_WORKSPACE/micropython/ports/rp2 -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=${{env.PIMORONI_PICO_PATH}}/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -S $GITHUB_WORKSPACE/project/firmware -B build-${{env.BOARD_TYPE}}-without-badger-os -DMAKE_SOURCE_DIR=$GITHUB_WORKSPACE/micropython/ports/rp2 -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=${{env.PIMORONI_PICO_PATH}}/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -v
 
     - name: Build MicroPython
       shell: bash

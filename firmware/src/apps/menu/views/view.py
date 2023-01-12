@@ -1,8 +1,12 @@
 from core.io import display, inputManager, screenUpdater
 from core.io.input_manager import Input
 from core.base.iview import IView
-from core.util.image import readImageBin
+from core.util.image import readImagePy
 import badger2040
+
+import bin.Checksum
+import bin.Keys
+import bin.Compose
 
 class MenuView(IView):
     def clear(self):
@@ -14,9 +18,9 @@ class MenuView(IView):
     def drawUI(self):
         display.pen(0)
         display.thickness(1)
-        display.image(readImageBin("bin/Checksum.bin"), 96, 96, 0, 0)
-        display.image(readImageBin("bin/Keys.bin"), 96, 96, 98, 0)
-        display.image(readImageBin("bin/Compose.bin"), 96, 96, 196, 0)
+        display.image(readImagePy(bin.Checksum), 96, 96, 0, 0)
+        display.image(readImagePy(bin.Keys), 96, 96, 98, 0)
+        display.image(readImagePy(bin.Compose), 96, 96, 196, 0)
 
         display.pen(0)
         display.thickness(1)

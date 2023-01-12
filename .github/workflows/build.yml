@@ -104,7 +104,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DPROJ_DIR=$GITHUB_WORKSPACE/project -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DPROJ_DIR=$GITHUB_WORKSPACE/project -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Build MicroPython
       shell: bash

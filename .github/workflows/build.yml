@@ -21,7 +21,7 @@ jobs:
     - name: Get Variables
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: $GITHUB_WORKSPACE/project/firmware/dependencies.env
+        envFile: ${{runner.workspace}}/project/firmware/dependencies.env
         expand: true
         expandWithJobEnv: true
 

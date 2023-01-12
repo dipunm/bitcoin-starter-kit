@@ -8,8 +8,9 @@ jobs:
 
     runs-on: ubuntu-20.04
     env:
+      GITHUB_WORKSPACE: $GITHUB_WORKSPACE
       BOARD_TYPE: PIMORONI_BADGER2040
-      PIMORONI_PICO_PATH: $GITHUB_WORKSPACE/pimoroni-pico  
+      PIMORONI_PICO_PATH: $GITHUB_WORKSPACE/pimoroni-pico
     
     steps:
 

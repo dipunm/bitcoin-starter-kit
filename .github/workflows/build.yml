@@ -29,7 +29,7 @@ jobs:
       run: |
         while read line; do
           echo "$line" >> $GITHUB_ENV
-        done < ${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env
+        done < "${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env"
     
     - name: Workspace Cache Micropython
       id: cache-micropython-src

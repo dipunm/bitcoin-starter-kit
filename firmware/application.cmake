@@ -10,6 +10,7 @@ function (copy_dir TARGET SRC)
         OUTPUT ${DST_FILES}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/../modules/
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${SRC} ${CMAKE_CURRENT_BINARY_DIR}/../modules/
+        VERBATIM
     )
     target_sources(${TARGET} INTERFACE ${DST_FILES})
 endfunction()

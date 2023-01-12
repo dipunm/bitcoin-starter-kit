@@ -23,13 +23,13 @@ jobs:
       with:
         path: project
 
-    - name: Get Variables
-      uses: cardinalby/export-env-action@v1
-      with:
-        envFile: ${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env
-        expand: true
-        expandWithJobEnv: true
-
+    - name: Import environment variables from a file
+      id: import-env
+      shell: bash
+      run: |
+        while read line; do
+          echo "$line" >> $GITHUB_ENV
+        done < ${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env
     
     - name: Workspace Cache Micropython
       id: cache-micropython-src
@@ -38,9 +38,9 @@ jobs:
         path: |
           ${{env.GITHUB_WORKSPACE}}/micropython
           ${{env.GITHUB_WORKSPACE}}/pimoroni-pico
-        key: workspace-micropython-$MICROPYTHON_VERSION-$PIMORONI_VERSION
+        key: workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.PIMORONI_VERSION}}
         restore-keys: |
-          workspace-micropython-$MICROPYTHON_VERSION-$PIMORONI_VERSION
+          workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.PIMORONI_VERSION}}
 
     - name: Compiler Cache
       uses: actions/cache@v3
@@ -56,7 +56,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: pimoroni/pimoroni-pico
-        ref: $PIMORONI_VERSION
+        ref: ${{env.PIMORONI_VERSION}}
         path: pimoroni-pico
         submodules: true
 
@@ -66,7 +66,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: micropython/micropython
-        ref: $MICROPYTHON_VERSION
+        ref: ${{env.MICROPYTHON_VERSION}}
         path: micropython
         submodules: false
 

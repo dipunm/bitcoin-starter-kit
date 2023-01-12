@@ -69,7 +69,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake -S $GITHUB_WORKSPACE/project/firmware -B build-${{env.BOARD_TYPE}}-without-badger-os -DMAKE_SOURCE_DIR=. -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=${{env.PIMORONI_PICO_PATH}}/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -S $GITHUB_WORKSPACE/project/firmware -B build-${{env.BOARD_TYPE}}-without-badger-os -DMAKE_SOURCE_DIR=$GITHUB_WORKSPACE/micropython/ports/rp2 -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=${{env.PIMORONI_PICO_PATH}}/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Build MicroPython
       shell: bash

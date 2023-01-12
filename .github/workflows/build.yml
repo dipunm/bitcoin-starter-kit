@@ -13,13 +13,13 @@ jobs:
   
     
     steps:
-    - name: Checkout Pimoroni Pico Libraries
+    - name: Checkout Pimoroni Pico
       uses: actions/checkout@v2
       with:
         repository: pimoroni/pimoroni-pico
         path: pimoroni-pico
 
-    - name: Checkout Pico SDK
+    - name: Checkout Micropython
       uses: actions/checkout@v2
       with:
         repository: micropython/micropython
@@ -35,6 +35,11 @@ jobs:
     - name: Fetch Pico SDK submodules
       shell: bash
       working-directory: micropython/lib/pico-sdk
+      run: git submodule update --init
+      
+    - name: Fetch Pimoroni Pico submodules
+      shell: bash
+      working-directory: pimoroni-pico
       run: git submodule update --init
 
     - name: Build mpy-cross
@@ -53,13 +58,13 @@ jobs:
         sudo apt update && sudo apt install ccache gcc-arm-none-eabi
         python3 -m pip install pillow
     
-    - name: Configure MicroPython (No BadgerOS)
+    - name: Configure MicroPython Build
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
         cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DBADGER2040_NO_MODULES=1 -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=../../../pimoroni-pico/micropython/modules/badger2040-micropython.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
-    - name: Build MicroPython (No BadgerOS)
+    - name: Build MicroPython
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
@@ -67,7 +72,7 @@ jobs:
         cmake --build build-${{env.BOARD_TYPE}}-without-badger-os -j 2
         ccache --show-stats || true
         
-    - name: Store .uf2 as artifact (No BadgerOS)
+    - name: Store .uf2 as artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{env.RELEASE_FILE}}-without-badger-os.uf2

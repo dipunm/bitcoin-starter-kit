@@ -21,7 +21,7 @@ jobs:
     - name: Get Variables
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: ${{runner.workspace}}/project/firmware/dependencies.env
+        envFile: ${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env
         expand: true
         expandWithJobEnv: true
 
@@ -30,7 +30,7 @@ jobs:
       id: cache-micropython-src
       uses: actions/cache@v3
       with:
-        path: ${{runner.workspace}}/micropython
+        path: ${{env.GITHUB_WORKSPACE}}/micropython
         key: workspace-micropython-${{env.MICROPYTHON_VERSION}}
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}
@@ -39,7 +39,7 @@ jobs:
       id: cache-pimoroni-src
       uses: actions/cache@v3
       with:
-        path: ${{runner.workspace}}/pimoroni-pico
+        path: ${{env.GITHUB_WORKSPACE}}/pimoroni-pico
         key: workspace-micropython-${{env.PIMORONI_VERSION}}
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}

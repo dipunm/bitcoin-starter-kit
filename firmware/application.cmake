@@ -15,4 +15,4 @@ function (copy_dir TARGET SRC)
     target_sources(${TARGET} INTERFACE ${DST_FILES})
 endfunction()
 
-copy_dir(usermod_badger2040 ${PROJ_DIR}/src)
+copy_dir(application ${PROJ_DIR}/src)

@@ -8,13 +8,22 @@ jobs:
 
     runs-on: ubuntu-20.04
     env:
-      MICROPYTHON_VERSION: 9dfabcd6d3d080aced888e8474e921f11dc979bb
-      PIMORONI_VERSION: v1.19.10
       BOARD_TYPE: PIMORONI_BADGER2040
-      PIMORONI_PICO_PATH: $GITHUB_WORKSPACE/pimoroni-pico
-  
+      PIMORONI_PICO_PATH: $GITHUB_WORKSPACE/pimoroni-pico  
     
     steps:
+
+    - name: Checkout source
+      uses: actions/checkout@v2
+      with:
+        path: project
+
+    - name: Get Variables
+      uses: cardinalby/export-env-action@v1
+      with:
+        envFile: '$GITHUB_WORKSPACE/project/firmware/dependencies.env'
+        expand: 'true'
+
     
     - name: Workspace Cache Micropython
       id: cache-micropython-src
@@ -43,11 +52,6 @@ jobs:
           ccache-micropython-badger2040-${{github.ref}}
           ccache-micropython-badger2040-
     
-    - name: Checkout source
-      uses: actions/checkout@v2
-      with:
-        path: project
-
     - name: Checkout Pimoroni Pico
       if: steps.cache-pimoroni-src.outputs.cache-hit != 'true'
       uses: actions/checkout@v2

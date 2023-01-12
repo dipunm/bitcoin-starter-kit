@@ -13,6 +13,11 @@ jobs:
     
     steps:
 
+    - name: Set GITHUB_WORKSPACE
+      shell: bash
+      run: |
+        echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
     - name: Checkout source
       uses: actions/checkout@v2
       with:
@@ -21,7 +26,7 @@ jobs:
     - name: Get Variables
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: ${{GITHUB_WORKSPACE}}/project/firmware/dependencies.env
+        envFile: ${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env
         expand: true
         expandWithJobEnv: true
 

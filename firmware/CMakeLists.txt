@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.12)
-set(MICROPY_TARGET firmware)
-project(${MICROPY_TARGET})
-include_directories(${MAKE_SOURCE_DIR})
-add_executable(${MICROPY_TARGET})

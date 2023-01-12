@@ -8,9 +8,8 @@ jobs:
 
     runs-on: ubuntu-20.04
     env:
-      GITHUB_WORKSPACE: ${{env.GITHUB_WORKSPACE}}
       BOARD_TYPE: PIMORONI_BADGER2040
-      PIMORONI_PICO_PATH: ${{env.GITHUB_WORKSPACE}}/pimoroni-pico
+      PIMORONI_PICO_PATH: $GITHUB_WORKSPACE/pimoroni-pico
     
     steps:
 
@@ -22,7 +21,7 @@ jobs:
     - name: Get Variables
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: ${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env
+        envFile: ${{GITHUB_WORKSPACE}}/project/firmware/dependencies.env
         expand: true
         expandWithJobEnv: true
 

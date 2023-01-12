@@ -13,4 +13,4 @@ function (copy_dir TARGET SRC)
     endforeach()
 endfunction()
 
-copy_dir(usermod_badger2040 ${GITHUB_WORKSPACE}/project/src)
+copy_dir(usermod_badger2040 ${PROJ_DIR}/src)

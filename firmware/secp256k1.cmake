@@ -17,6 +17,7 @@ target_include_directories(secp256k1 INTERFACE
 target_compile_options(secp256k1 INTERFACE
     -DHAVE_CONFIG_H 
     -Wno-unused-function
+    -Wno-error
 )
 
 

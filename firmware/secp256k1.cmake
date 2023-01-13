@@ -1,4 +1,4 @@
-    # Create an INTERFACE library for our C module.
+# Create an INTERFACE library for our C module.
 add_library(secp256k1 INTERFACE)
 
 # Add our source files to the lib

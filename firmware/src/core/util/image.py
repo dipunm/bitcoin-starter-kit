@@ -5,5 +5,4 @@ def readImageBin(path, width=296, height=128):
 
 def readImagePy(pyImage):
     BADGE_IMAGE = bytearray(pyImage.data())
-    del pyImage
     return BADGE_IMAGE

@@ -118,7 +118,6 @@ jobs:
 
     - name: Install Compiler & CCache
       run: |
-        sudo apt-get retry --option="APT::Acquire::Retries=3"
         sudo apt update && sudo apt install ccache gcc-arm-none-eabi
         python3 -m pip install pillow
     

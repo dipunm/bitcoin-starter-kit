@@ -31,7 +31,7 @@ jobs:
         while read line; do
           echo "$line" >> $GITHUB_ENV
         done < "${{env.GITHUB_WORKSPACE}}/project/firmware/dependencies.env"
-    
+
     - name: Workspace Cache Micropython
       id: cache-micropython-src
       uses: actions/cache@v3
@@ -52,6 +52,13 @@ jobs:
         restore-keys: |
           workspace-secp256k1-${{env.SECP256K1_VERSION}}
 
+    - name: Embit Cache
+      id: cache-embit-src
+      uses: actions/cache@v3
+      with:
+        path: ${{env.GITHUB_WORKSPACE}}/project/firmware/embit
+        key: embit-${{env.EMBIT_VERSION}}
+        restore-keys: embit-${{env.EMBIT_VERSION}}
 
     - name: Compiler Cache
       uses: actions/cache@v3
@@ -115,6 +122,13 @@ jobs:
         ref: ${{env.SECP256K1_VERSION}}
         path: secp256k1-embedded
         submodules: true
+
+    - name: Download Embit
+      if: steps.cache-embit-src.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: project/firmware/src
+      run: |
+        wget -qO- https://github.com/diybitcoinhardware/embit/archive/refs/tags/v${{env.EMBIT_VERSION}}.tar.gz | tar -xz --strip-components=2 -C . embit-${{env.EMBIT_VERSION}}/src/embit
 
     - name: Install Compiler & CCache
       run: |

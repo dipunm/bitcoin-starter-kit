@@ -114,14 +114,14 @@ jobs:
         ${{env.PIMORONI_PICO_PATH}}/micropython/_board/board-fixup.sh badger2040 ${{env.BOARD_TYPE}} ${{env.PIMORONI_PICO_PATH}}/micropython/_board      
       
 
-    - name: Checkout secp256k1 Pico
+    - name: Checkout secp256k1
       if: steps.cache-secp256k1-src.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: kdmukai/secp256k1-embedded
         ref: ${{env.SECP256K1_VERSION}}
         path: secp256k1-embedded
-        submodules: true
+        submodules: 'recursive'
 
     - name: Download Embit
       if: steps.cache-embit-src.outputs.cache-hit != 'true'

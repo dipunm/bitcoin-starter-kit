@@ -1,0 +1,10 @@
+diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
+index d35d410..f9b79d7 100644
+--- a/mpy/libsecp256k1.c
++++ b/mpy/libsecp256k1.c
+@@ -990,4 +990,4 @@ const mp_obj_module_t secp256k1_user_cmodule = {
+ };
+ 
+ // Register the module to make it available in Python
+-MP_REGISTER_MODULE(MP_QSTR_secp256k1, secp256k1_user_cmodule, MODULE_SECP256K1_ENABLED);
++MP_REGISTER_MODULE(MP_QSTR_secp256k1, secp256k1_user_cmodule);

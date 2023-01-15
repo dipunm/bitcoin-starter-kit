@@ -123,6 +123,13 @@ jobs:
         path: secp256k1-embedded
         submodules: 'recursive'
 
+    - name: Patch files
+      if: steps.cache-secp256k1-src.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: secp256k1-embedded
+      run: |
+        git apply ../project/firmware/secp256k1.patch
+
     - name: Download Embit
       if: steps.cache-embit-src.outputs.cache-hit != 'true'
       shell: bash

@@ -43,15 +43,6 @@ jobs:
         restore-keys: |
           workspace-micropython-${{env.MICROPYTHON_VERSION}}-${{env.PIMORONI_VERSION}}
 
-    - name: Workspace Cache secp256k1
-      id: cache-secp256k1-src
-      uses: actions/cache@v3
-      with:
-        path: ${{env.GITHUB_WORKSPACE}}/secp256k1-embedded
-        key: workspace-secp256k1-${{env.SECP256K1_VERSION}}
-        restore-keys: |
-          workspace-secp256k1-${{env.SECP256K1_VERSION}}
-
     - name: Embit Cache
       id: cache-embit-src
       uses: actions/cache@v3
@@ -115,7 +106,6 @@ jobs:
       
 
     - name: Checkout secp256k1
-      if: steps.cache-secp256k1-src.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: kdmukai/secp256k1-embedded
@@ -124,7 +114,6 @@ jobs:
         submodules: 'recursive'
 
     - name: Patch files
-      if: steps.cache-secp256k1-src.outputs.cache-hit != 'true'
       shell: bash
       working-directory: secp256k1-embedded
       run: |

@@ -1,10 +1,6 @@
-diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
-index d35d410..f9b79d7 100644
---- a/mpy/libsecp256k1.c
-+++ b/mpy/libsecp256k1.c
-@@ -990,4 +990,4 @@ const mp_obj_module_t secp256k1_user_cmodule = {
- };
- 
- // Register the module to make it available in Python
--MP_REGISTER_MODULE(MP_QSTR_secp256k1, secp256k1_user_cmodule, MODULE_SECP256K1_ENABLED);
-+MP_REGISTER_MODULE(MP_QSTR_secp256k1, secp256k1_user_cmodule);
+diff --git a/secp256k1.lib b/secp256k1.lib
+index 1edc806..e69de29 100644
+--- a/secp256k1.lib
++++ b/secp256k1.lib
+@@ -1 +0,0 @@
+-https://github.com/bitcoin-core/secp256k1/#f39f99be0e6add959f534c03b93044cef066fe09

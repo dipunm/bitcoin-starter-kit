@@ -15,7 +15,8 @@ target_include_directories(secp256k1 INTERFACE
     ${SECP256K1_PATH}/mpy/config
 )
 target_compile_options(secp256k1 INTERFACE
-    -DHAVE_CONFIG_H 
+    -DHAVE_CONFIG_H
+    -DMODULE_SECP256K1_ENABLED=1
     -Wno-unused-function
     -Wno-error
 )

@@ -1,5 +1,5 @@
-include(${PIMORONI_PICO_PATH}/micropython/modules/badger2040-micropython.cmake)
 include(${FIRMWARE_DIR}/secp256k1.cmake)
+include(${PIMORONI_PICO_PATH}/micropython/modules/badger2040-micropython.cmake)
 
 function (copy_dir TARGET SRC)
     file(GLOB_RECURSE SRC_FILES ${SRC}/*)

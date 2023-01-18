@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "secp256k1.h": "c"
+    }
+}

@@ -135,14 +135,14 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DSECP256K1_PATH=$GITHUB_WORKSPACE/secp256k1-embedded -DSECP_CFLAGS=-DMODULE_SECP256K1_ENABLED=1 -DFIRMWARE_DIR=$GITHUB_WORKSPACE/project/firmware -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DSECP256K1_PATH=$GITHUB_WORKSPACE/secp256k1-embedded -DCFLAGS_EXTRA=-DMODULE_SECP256K1_ENABLED=1 -DFIRMWARE_DIR=$GITHUB_WORKSPACE/project/firmware -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Build MicroPython
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
         ccache --zero-stats || true
-        cmake --build build-${{env.BOARD_TYPE}}-without-badger-os -j 2 -v
+        cmake --debug-trycompile --build build-${{env.BOARD_TYPE}}-without-badger-os -j 2
         ccache --show-stats || true
         
     - name: Store .uf2 as artifact

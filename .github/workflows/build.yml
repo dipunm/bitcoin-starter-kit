@@ -142,7 +142,7 @@ jobs:
       working-directory: micropython/ports/rp2
       run: |
         ccache --zero-stats || true
-        cmake --build build-${{env.BOARD_TYPE}}-without-badger-os -j 2 --trace
+        cmake --build build-${{env.BOARD_TYPE}}-without-badger-os -j 2
         ccache --show-stats || true
         
     - name: Store .uf2 as artifact

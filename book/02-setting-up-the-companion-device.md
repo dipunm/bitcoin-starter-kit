@@ -69,6 +69,8 @@ At this point, you have installed the latest firmware. Don't forget to clean up 
 
 ## Installing the software
 
+UPDATE: This section is no longer necessary as I am building custom firmware now. TODO: Update instructions above.
+
 In order to install the software, we will be:
 
 - Downloading the software.

@@ -3,9 +3,10 @@ add_library(secp256k1 INTERFACE)
 
 # Add our source files to the lib
 target_sources(secp256k1 INTERFACE
-    ${SECP256K1_PATH}/secp256k1/src/secp256k1.c
-    ${SECP256K1_PATH}/mpy/config/ext_callbacks.c
-    ${SECP256K1_PATH}/mpy/libsecp256k1.c
+    # ${SECP256K1_PATH}/secp256k1/src/secp256k1.c
+    # ${SECP256K1_PATH}/mpy/config/ext_callbacks.c
+    # ${SECP256K1_PATH}/mpy/libsecp256k1.c
+    ${CMAKE_CURRENT_LIST_DIR}/test.cpp
 )
 
 # Add the current directory as an include directory.

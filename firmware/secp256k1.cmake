@@ -20,6 +20,7 @@ target_compile_options(secp256k1 INTERFACE
     -DMODULE_SECP256K1_ENABLED=1
     -Wno-unused-function
     -Wno-error
+    -DDIPUN
 )
 
 

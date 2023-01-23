@@ -23,6 +23,11 @@ target_compile_options(secp256k1 INTERFACE
     -DDIPUN
 )
 
+list(APPEND MICROPY_CPP_FLAGS_EXTRA 
+    -DMODULE_SECP256K1_ENABLED=1
+    -DHAVE_CONFIG_H
+    -DDIPUN
+)
 
 # Link our INTERFACE library to the usermod target.
 target_link_libraries(usermod INTERFACE secp256k1)

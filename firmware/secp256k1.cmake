@@ -3,16 +3,16 @@ add_library(secp256k1 INTERFACE)
 
 # Add our source files to the lib
 target_sources(secp256k1 INTERFACE
-    # ${SECP256K1_PATH}/secp256k1/src/secp256k1.c
-    # ${SECP256K1_PATH}/mpy/config/ext_callbacks.c
-    # ${SECP256K1_PATH}/mpy/libsecp256k1.c
-    ${CMAKE_CURRENT_LIST_DIR}/test.cpp
+    ${SECP256K1_PATH}/secp256k1/src/secp256k1.c
+    ${SECP256K1_PATH}/mpy/config/ext_callbacks.c
+    ${SECP256K1_PATH}/mpy/libsecp256k1.c
+    # ${CMAKE_CURRENT_LIST_DIR}/test.cpp
 )
 
 # Add the current directory as an include directory.
 target_include_directories(secp256k1 INTERFACE
-    ${SECP256K1_PATH}/secp256k1
     ${SECP256K1_PATH}/secp256k1/src
+    ${SECP256K1_PATH}/secp256k1
     ${SECP256K1_PATH}/mpy/config
 )
 target_compile_options(secp256k1 INTERFACE
@@ -20,13 +20,13 @@ target_compile_options(secp256k1 INTERFACE
     -DMODULE_SECP256K1_ENABLED=1
     -Wno-unused-function
     -Wno-error
-    -DDIPUN
+    # -DDIPUN
 )
 
 list(APPEND MICROPY_CPP_FLAGS_EXTRA 
     -DMODULE_SECP256K1_ENABLED=1
     -DHAVE_CONFIG_H
-    -DDIPUN
+    # -DDIPUN
 )
 
 # Link our INTERFACE library to the usermod target.

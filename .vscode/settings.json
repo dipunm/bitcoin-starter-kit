@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "secp256k1.h": "c"
-    }
+    },
+    "esbonio.sphinx.confDir": ""
 }

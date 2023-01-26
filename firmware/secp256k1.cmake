@@ -11,8 +11,8 @@ target_sources(secp256k1 INTERFACE
 
 # Add the current directory as an include directory.
 target_include_directories(secp256k1 INTERFACE
-    ${SECP256K1_PATH}/secp256k1/src
     ${SECP256K1_PATH}/secp256k1
+    ${SECP256K1_PATH}/secp256k1/src
     ${SECP256K1_PATH}/mpy/config
 )
 target_compile_options(secp256k1 INTERFACE

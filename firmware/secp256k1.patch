@@ -1,10 +1,25 @@
 diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
-index d35d410..f9b79d7 100644
+index d35d410..3be5934 100644
 --- a/mpy/libsecp256k1.c
 +++ b/mpy/libsecp256k1.c
-@@ -990,4 +990,4 @@ const mp_obj_module_t secp256k1_user_cmodule = {
+@@ -562,9 +562,9 @@ STATIC mp_obj_t usecp256k1_ec_privkey_add(mp_obj_t privarg, const mp_obj_t tweak
+ 
+     vstr_t priv2;
+     vstr_init_len(&priv2, 32);
+-    memcpy((byte*)priv2.buf, privbuf.buf, 32);
++    memcpy((unsigned char*)priv2.buf, privbuf.buf, 32);
+ 
+-    int res = secp256k1_ec_privkey_tweak_add(ctx, priv2.buf, tweakbuf.buf);
++    int res = secp256k1_ec_privkey_tweak_add(ctx, (unsigned char*)priv2.buf, tweakbuf.buf);
+     if(!res){ // never happens according to the API
+         mp_raise_ValueError("Failed to tweak the private key");
+         return mp_const_none;
+@@ -990,4 +990,6 @@ const mp_obj_module_t secp256k1_user_cmodule = {
  };
  
  // Register the module to make it available in Python
 -MP_REGISTER_MODULE(MP_QSTR_secp256k1, secp256k1_user_cmodule, MODULE_SECP256K1_ENABLED);
++#if MODULE_SECP256K1_ENABLED
 +MP_REGISTER_MODULE(MP_QSTR_secp256k1, secp256k1_user_cmodule);
++#endif
+\ No newline at end of file

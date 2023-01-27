@@ -1,8 +1,24 @@
 diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
-index d35d410..3ea044b 100644
+index d35d410..49c6146 100644
 --- a/mpy/libsecp256k1.c
 +++ b/mpy/libsecp256k1.c
-@@ -452,6 +452,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(usecp256k1_ecdsa_sign_obj, 2, usecp256k1_ecds
+@@ -10,6 +10,7 @@
+ #include "py/runtime.h"
+ #include "py/builtin.h"
+ #include "py/gc.h"
++#include <stdio.h>
+ 
+ #define malloc(b) gc_alloc((b), false)
+ #define free gc_free
+@@ -31,6 +32,7 @@ void maybe_init_ctx(){
+         return;
+     }
+     // ctx = secp256k1_context_create(SECP256K1_CONTEXT_VERIFY | SECP256K1_CONTEXT_SIGN);
++    printf("hello world")
+     ctx = secp256k1_context_preallocated_create((void *)preallocated_ctx, SECP256K1_CONTEXT_VERIFY | SECP256K1_CONTEXT_SIGN);
+ }
+ 
+@@ -452,6 +454,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(usecp256k1_ecdsa_sign_obj, 2, usecp256k1_ecds
  // verify secret key
  STATIC mp_obj_t usecp256k1_ec_seckey_verify(const mp_obj_t arg){
      maybe_init_ctx();
@@ -10,7 +26,7 @@ index d35d410..3ea044b 100644
      mp_buffer_info_t buf;
      mp_get_buffer_raise(arg, &buf, MP_BUFFER_READ);
      if(buf.len != 32){
-@@ -562,9 +563,9 @@ STATIC mp_obj_t usecp256k1_ec_privkey_add(mp_obj_t privarg, const mp_obj_t tweak
+@@ -562,9 +565,9 @@ STATIC mp_obj_t usecp256k1_ec_privkey_add(mp_obj_t privarg, const mp_obj_t tweak
  
      vstr_t priv2;
      vstr_init_len(&priv2, 32);
@@ -22,7 +38,7 @@ index d35d410..3ea044b 100644
      if(!res){ // never happens according to the API
          mp_raise_ValueError("Failed to tweak the private key");
          return mp_const_none;
-@@ -990,4 +991,6 @@ const mp_obj_module_t secp256k1_user_cmodule = {
+@@ -990,4 +993,6 @@ const mp_obj_module_t secp256k1_user_cmodule = {
  };
  
  // Register the module to make it available in Python

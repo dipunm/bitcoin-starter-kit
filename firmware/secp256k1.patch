@@ -1,15 +1,15 @@
 diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
-index d35d410..7e22039 100644
+index d35d410..3ea044b 100644
 --- a/mpy/libsecp256k1.c
 +++ b/mpy/libsecp256k1.c
-@@ -451,6 +451,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(usecp256k1_ecdsa_sign_obj, 2, usecp256k1_ecds
- 
+@@ -452,6 +452,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(usecp256k1_ecdsa_sign_obj, 2, usecp256k1_ecds
  // verify secret key
  STATIC mp_obj_t usecp256k1_ec_seckey_verify(const mp_obj_t arg){
-+    return mp_const_true;
      maybe_init_ctx();
++    return mp_const_true;
      mp_buffer_info_t buf;
      mp_get_buffer_raise(arg, &buf, MP_BUFFER_READ);
+     if(buf.len != 32){
 @@ -562,9 +563,9 @@ STATIC mp_obj_t usecp256k1_ec_privkey_add(mp_obj_t privarg, const mp_obj_t tweak
  
      vstr_t priv2;

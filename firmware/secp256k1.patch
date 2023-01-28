@@ -1,5 +1,5 @@
 diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
-index d35d410..273d1c6 100644
+index d35d410..9099d9a 100644
 --- a/mpy/libsecp256k1.c
 +++ b/mpy/libsecp256k1.c
 @@ -10,6 +10,7 @@
@@ -22,7 +22,7 @@ index d35d410..273d1c6 100644
  
  // verify secret key
  STATIC mp_obj_t usecp256k1_ec_seckey_verify(const mp_obj_t arg){
-+    printf("hello world0 %d", 1);
++    fprintf(stdout, "hello world0 %d", 1);
 +    return mp_const_true;
      maybe_init_ctx();
      mp_buffer_info_t buf;

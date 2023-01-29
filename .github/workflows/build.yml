@@ -109,7 +109,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: kdmukai/secp256k1-embedded
-        ref: ${{env.SECP256K1_VERSION}}
+        ref: ${{env.SECP256K1_EMBEDDED_VERSION}}
         path: secp256k1-embedded
         submodules: 'recursive'
 

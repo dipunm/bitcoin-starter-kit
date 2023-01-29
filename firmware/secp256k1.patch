@@ -1,12 +1,12 @@
 diff --git a/src/secp256k1.c b/src/secp256k1.c
-index 9908cab..43014a3 100644
+index 9908cab..71eb778 100644
 --- a/src/secp256k1.c
 +++ b/src/secp256k1.c
-@@ -140,6 +140,7 @@ secp256k1_context* secp256k1_context_preallocated_create(void* prealloc, unsigne
+@@ -136,6 +136,7 @@ secp256k1_context* secp256k1_context_preallocated_create(void* prealloc, unsigne
+     }
+     VERIFY_CHECK(prealloc != NULL);
+     ret = (secp256k1_context*)manual_alloc(&prealloc, sizeof(secp256k1_context), base, prealloc_size);
++    return NULL;
+     ret->illegal_callback = default_illegal_callback;
      ret->error_callback = default_error_callback;
  
-     secp256k1_ecmult_context_init(&ret->ecmult_ctx);
-+    return NULL;
-     secp256k1_ecmult_gen_context_init(&ret->ecmult_gen_ctx);
- 
-     /* Flags have been checked by secp256k1_context_preallocated_size. */

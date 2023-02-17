@@ -1,5 +1,5 @@
 diff --git a/mpy/libsecp256k1.c b/mpy/libsecp256k1.c
-index d35d410..637e930 100644
+index d35d410..39538c7 100644
 --- a/mpy/libsecp256k1.c
 +++ b/mpy/libsecp256k1.c
 @@ -30,6 +30,9 @@ void maybe_init_ctx(){
@@ -8,7 +8,7 @@ index d35d410..637e930 100644
      }
 +
 +    mp_print_t print = mp_setup_print(0, mp_const_false);
-+    mp_print_str(print, "hello world");
++    mp_print_str(&print, "hello world");
      // ctx = secp256k1_context_create(SECP256K1_CONTEXT_VERIFY | SECP256K1_CONTEXT_SIGN);
      ctx = secp256k1_context_preallocated_create((void *)preallocated_ctx, SECP256K1_CONTEXT_VERIFY | SECP256K1_CONTEXT_SIGN);
  }

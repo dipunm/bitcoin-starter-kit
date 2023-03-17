@@ -1,4 +1,5 @@
-include(${FIRMWARE_DIR}/secp256k1.cmake)
+# include(${FIRMWARE_DIR}/secp256k1.cmake)
+include(${FIRMWARE_DIR}/ubitcoin.cmake)
 include(${PIMORONI_PICO_PATH}/micropython/modules/badger2040-micropython.cmake)
 
 function (copy_dir TARGET SRC)

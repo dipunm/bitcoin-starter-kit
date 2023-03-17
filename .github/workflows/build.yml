@@ -104,7 +104,14 @@ jobs:
       run: |
         ${{env.PIMORONI_PICO_PATH}}/micropython/_board/board-fixup.sh badger2040 ${{env.BOARD_TYPE}} ${{env.PIMORONI_PICO_PATH}}/micropython/_board      
       
-
+    - name: Checkout ubitcoin
+      uses: actions/checkout@v2
+      with:
+        repository: micro-bitcoin/ubitcoin
+        ref: ${{env.UBITCOIN_VERSION}}
+        path: ubitcoin
+        submodules: 'recursive'
+    
     - name: Checkout secp256k1
       uses: actions/checkout@v2
       with:
@@ -141,7 +148,7 @@ jobs:
       shell: bash
       working-directory: micropython/ports/rp2
       run: |
-        cmake --debug-output --trace -Wdev -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DSECP256K1_PATH=$GITHUB_WORKSPACE/secp256k1-embedded -DFIRMWARE_DIR=$GITHUB_WORKSPACE/project/firmware -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --debug-output --trace -Wdev -S . -B build-${{env.BOARD_TYPE}}-without-badger-os -DUBITCOIN_PATH=$GITHUB_WORKSPACE/ubitcoin -DSECP256K1_PATH=$GITHUB_WORKSPACE/secp256k1-embedded -DFIRMWARE_DIR=$GITHUB_WORKSPACE/project/firmware -DPIMORONI_PICO_PATH=${{env.PIMORONI_PICO_PATH}} -DPICO_BUILD_DOCS=0 -DUSER_C_MODULES=$GITHUB_WORKSPACE/project/firmware/firmware.cmake -DMICROPY_BOARD=${{env.BOARD_TYPE}} -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Build MicroPython
       shell: bash

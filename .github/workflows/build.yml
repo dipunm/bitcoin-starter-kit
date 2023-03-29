@@ -163,3 +163,4 @@ jobs:
       with:
         name: firmware.uf2
         path: micropython/ports/rp2/build-${{env.BOARD_TYPE}}-without-badger-os/firmware.uf2
+        permissions: public-read

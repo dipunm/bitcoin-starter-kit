@@ -4,6 +4,7 @@ add_library(ubitcoin INTERFACE)
 # Add our source files to the lib
 target_sources(ubitcoin INTERFACE
     ${UBITCOIN_PATH}/src/HDWallet.cpp
+    ${UBITCOIN_PATH}/src/Micropy.cpp
 )
 
 # Add the current directory as an include directory.

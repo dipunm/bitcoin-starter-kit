@@ -6,3 +6,8 @@ pushd secp256k1
 git diff > ../../../secp256k1.patch
 popd
 popd
+
+pushd firmware/tmp/ubitcoin
+git add -A
+git diff --cached > ../../ubitcoin.patch
+popd

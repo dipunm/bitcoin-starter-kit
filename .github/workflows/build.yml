@@ -112,6 +112,12 @@ jobs:
         path: ubitcoin
         submodules: 'recursive'
     
+    - name: Patch files ubitcoin
+      shell: bash
+      working-directory: micro-bitcoin/ubitcoin
+      run: |
+        git apply ../../project/firmware/ubitcoin.patch
+
     - name: Checkout secp256k1
       uses: actions/checkout@v2
       with:

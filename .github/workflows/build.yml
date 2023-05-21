@@ -116,7 +116,7 @@ jobs:
       shell: bash
       working-directory: ubitcoin
       run: |
-        git apply ../../project/firmware/ubitcoin.patch
+        git apply ../project/firmware/ubitcoin.patch
 
     - name: Checkout secp256k1
       uses: actions/checkout@v2

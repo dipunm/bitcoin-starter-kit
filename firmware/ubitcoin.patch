@@ -1,6 +1,6 @@
 diff --git a/src/Micropy.cpp b/src/Micropy.cpp
 new file mode 100644
-index 0000000..7fef2bb
+index 0000000..f2b78ad
 --- /dev/null
 +++ b/src/Micropy.cpp
 @@ -0,0 +1,22 @@
@@ -10,7 +10,7 @@ index 0000000..7fef2bb
 +
 +STATIC const mp_rom_map_elem_t ubitcoin_module_globals_table[] = {
 +    { MP_ROM_QSTR(MP_QSTR_fingerprint), MP_ROM_PTR(&ubitcoin_fingerprint) }
-+}
++};
 +
 +STATIC MP_DEFINE_CONST_DICT(ubitcoin_module_globals, ubitcoin_module_globals_table);
 +

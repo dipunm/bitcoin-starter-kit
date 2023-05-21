@@ -114,7 +114,7 @@ jobs:
     
     - name: Patch files ubitcoin
       shell: bash
-      working-directory: micro-bitcoin/ubitcoin
+      working-directory: ubitcoin
       run: |
         git apply ../../project/firmware/ubitcoin.patch
 

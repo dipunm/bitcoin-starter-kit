@@ -1,10 +1,11 @@
 diff --git a/src/Micropy.cpp b/src/Micropy.cpp
 new file mode 100644
-index 0000000..6ac27c9
+index 0000000..cb6ecea
 --- /dev/null
 +++ b/src/Micropy.cpp
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,24 @@
 +#include <string.h>
++#include <stdlib.h>
 +#include "py/obj.h"
 +#include "py/builtin.h"
 +

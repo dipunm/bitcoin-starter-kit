@@ -1,8 +1,8 @@
-diff --git a/src/Micropy.cpp b/src/Micropy.cpp
+diff --git a/src/Micropy.c b/src/Micropy.c
 new file mode 100644
 index 0000000..cb6ecea
 --- /dev/null
-+++ b/src/Micropy.cpp
++++ b/src/Micropy.c
 @@ -0,0 +1,24 @@
 +#include <string.h>
 +#include <stdlib.h>

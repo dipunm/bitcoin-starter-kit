@@ -1,12 +1,12 @@
 diff --git a/src/Micropy.cpp b/src/Micropy.cpp
 new file mode 100644
-index 0000000..0a09dd8
+index 0000000..6ac27c9
 --- /dev/null
 +++ b/src/Micropy.cpp
 @@ -0,0 +1,23 @@
 +#include <string.h>
 +#include "py/obj.h"
-+#include "py/runtime.h"
++#include "py/builtin.h"
 +
 +STATIC mp_obj_t ubitcoin_fingerprint(void) {
 +    const char *message = "Hello from uBitcoin!";

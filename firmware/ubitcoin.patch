@@ -1,6 +1,6 @@
 diff --git a/src/Micropy.cpp b/src/Micropy.cpp
 new file mode 100644
-index 0000000..a619739
+index 0000000..0e33bd8
 --- /dev/null
 +++ b/src/Micropy.cpp
 @@ -0,0 +1,22 @@
@@ -12,7 +12,7 @@ index 0000000..a619739
 +    return mp_obj_new_str(message, strlen(message));
 +}
 +
-+STATIC MP_DEFINE_CONST_FUN_OBJ_0(ubitcoin_fingerprint_obj, ubitcoin_fingerprint);
++STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(ubitcoin_fingerprint_obj, 0, ubitcoin_fingerprint);
 +
 +STATIC const mp_rom_map_elem_t ubitcoin_module_globals_table[] = {
 +    { MP_ROM_QSTR(MP_QSTR_fingerprint), MP_ROM_PTR(&ubitcoin_fingerprint_obj) }

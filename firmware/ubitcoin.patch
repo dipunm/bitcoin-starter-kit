@@ -1,6 +1,6 @@
 diff --git a/src/Micropy.cpp b/src/Micropy.cpp
 new file mode 100644
-index 0000000..db53ada
+index 0000000..1456b6a
 --- /dev/null
 +++ b/src/Micropy.cpp
 @@ -0,0 +1,25 @@
@@ -8,12 +8,6 @@ index 0000000..db53ada
 +#include "py/obj.h"
 +
 +STATIC mp_obj_t ubitcoin_fingerprint(void);
-+
-+STATIC const mp_rom_map_elem_t ubitcoin_module_globals_table[] = {
-+    { MP_ROM_QSTR(MP_QSTR_fingerprint), MP_ROM_PTR(&ubitcoin_fingerprint_obj) }
-+};
-+
-+STATIC MP_DEFINE_CONST_DICT(ubitcoin_module_globals, ubitcoin_module_globals_table);
 +
 +const mp_obj_module_t ubitcoin_module = {
 +    .base = { &mp_type_module },
@@ -27,5 +21,11 @@ index 0000000..db53ada
 +}
 +
 +STATIC MP_DEFINE_CONST_FUN_OBJ_0(ubitcoin_fingerprint_obj, ubitcoin_fingerprint);
++
++STATIC const mp_rom_map_elem_t ubitcoin_module_globals_table[] = {
++    { MP_ROM_QSTR(MP_QSTR_fingerprint), MP_ROM_PTR(&ubitcoin_fingerprint_obj) }
++};
++
++STATIC MP_DEFINE_CONST_DICT(ubitcoin_module_globals, ubitcoin_module_globals_table);
 +
 +MP_REGISTER_MODULE(MP_QSTR_ubitcoin_module, ubitcoin_module);

@@ -1,16 +1,22 @@
 diff --git a/src/Micropy.c b/src/Micropy.c
 new file mode 100644
-index 0000000..cb6ecea
+index 0000000..874e86f
 --- /dev/null
 +++ b/src/Micropy.c
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,30 @@
 +#include <string.h>
 +#include <stdlib.h>
 +#include "py/obj.h"
 +#include "py/builtin.h"
++#include "Bitcoin.h"
++#include "Conversion.h"
++#include "Hash.h"
 +
 +STATIC mp_obj_t ubitcoin_fingerprint(void) {
-+    const char *message = "Hello from uBitcoin!";
++
++    HDPrivateKey hd("add good charge eagle walk culture book inherit fan nature seek repair", "");
++    const char *message = hd.fingerprint()
++    // const char *message = "Hello from uBitcoin!";
 +    return mp_obj_new_str(message, strlen(message));
 +}
 +

@@ -1,4 +1,9 @@
+#include <iostream>
 #include "Bitcoin.h"
+#include "PSBT.h"
+
+#include <stdint.h>
+#include <stdlib.h>
 
 extern "C" {
 

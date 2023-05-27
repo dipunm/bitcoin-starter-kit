@@ -16,12 +16,12 @@ target_include_directories(ubitcoin INTERFACE
 
 target_compile_options(ubitcoin INTERFACE
     -DUSE_STDONLY
-    -DUSE_STD_STRING=0
+    -DUSE_STD_STRING=1
 )
 
 list(APPEND MICROPY_CPP_FLAGS_EXTRA 
     -DUSE_STDONLY
-    -DUSE_STD_STRING=0
+    -DUSE_STD_STRING=1
 )
 
 # Link our INTERFACE library to the usermod target.

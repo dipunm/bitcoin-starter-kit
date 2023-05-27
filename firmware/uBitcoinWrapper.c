@@ -1,4 +1,4 @@
-#include <examplemodule.h>
+#include <uBitcoinWrapper.h>
 
 // STATIC mp_obj_t ubitcoin_fingerprint(void) {
 

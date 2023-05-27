@@ -1,6 +1,6 @@
 #include "Bitcoin.h"
 
-external "C" {
+extern "C" {
 
 #include <uBitcoinWrapper.h>
 

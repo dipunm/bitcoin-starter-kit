@@ -6,7 +6,6 @@ target_sources(ubitcoin INTERFACE
     ${FIRMWARE_DIR}/uBitcoinWrapper.c
     ${FIRMWARE_DIR}/uBitcoinWrapper.cpp
     ${UBITCOIN_PATH}/src/HDWallet.cpp
-    ${UBITCOIN_PATH}/src/Micropy.c
 )
 
 # Add the current directory as an include directory.

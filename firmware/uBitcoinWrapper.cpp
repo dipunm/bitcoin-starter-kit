@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Networks.h"
 #include "Bitcoin.h"
 #include "PSBT.h"
 
